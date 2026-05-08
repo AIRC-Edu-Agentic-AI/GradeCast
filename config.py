@@ -1,0 +1,1 @@
+WEEK_DAYS = 7
