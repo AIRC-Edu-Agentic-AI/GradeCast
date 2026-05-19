@@ -1,3 +1,32 @@
-data/
+# Python
 __pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.env/
+env/
+
+# Data files (too large for git)
+data/
+*.csv
+*.pkl
+*.joblib
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# VS Code local history
+.history/
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Model outputs
+outputs/
+*.json
