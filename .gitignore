@@ -30,3 +30,4 @@ data/
 # Model outputs
 outputs/*.json
 *.json
+results.json
