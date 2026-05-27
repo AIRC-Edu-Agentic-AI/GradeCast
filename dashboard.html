@@ -3,152 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Risk & Grade Trajectories</title>
+<title>GradeCast — Risk & Grade Trajectories</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0d0f14; --bg2:#13161e; --bg3:#1a1e2a;
-  --border:rgba(255,255,255,0.07);
-  --text:#e8eaf0; --muted:#6b7080;
-  --accent:#4f8ef7; --red:#e05555; --green:#3ec98e; --amber:#e6a235;
-  --font:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
-}
+:root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--border:rgba(255,255,255,0.07);
+  --text:#e8eaf0;--muted:#6b7080;--accent:#4f8ef7;--red:#e05555;--green:#3ec98e;
+  --amber:#e6a235;--purple:#a78bfa;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;}
-
-header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;
   border-bottom:1px solid var(--border);background:var(--bg2);}
-.logo{font-family:var(--mono);font-size:13px;letter-spacing:.05em;color:var(--accent);}
+.logo{font-family:var(--mono);font-size:13px;color:var(--accent);}
 .logo span{color:var(--muted);}
-.hmeta{font-size:12px;color:var(--muted);font-family:var(--mono);}
-
-.main{max-width:1200px;margin:0 auto;padding:24px 32px;}
-
-/* tabs */
+.hmeta{font-size:11px;color:var(--muted);font-family:var(--mono);}
+.main{max-width:1240px;margin:0 auto;padding:20px 28px;}
 .tabs{display:flex;gap:2px;background:var(--bg2);border:1px solid var(--border);
-  border-radius:10px;padding:4px;margin-bottom:24px;width:fit-content;}
-.tab{padding:7px 18px;border-radius:7px;border:none;background:transparent;
+  border-radius:10px;padding:4px;margin-bottom:20px;width:fit-content;}
+.tab{padding:6px 16px;border-radius:7px;border:none;background:transparent;
   color:var(--muted);font-family:var(--font);font-size:13px;cursor:pointer;transition:all .15s;}
 .tab:hover{color:var(--text);}
-.tab.on{background:var(--bg3);color:var(--text);font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,.4);}
+.tab.on{background:var(--bg3);color:var(--text);font-weight:500;}
 .panel{display:none;}.panel.on{display:block;}
-
-/* controls */
-.ctrl-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:14px;}
+.ctrl-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px;}
 .ctrl{display:flex;align-items:center;gap:10px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:8px;padding:8px 14px;}
-.ctrl label{font-size:11px;color:var(--muted);font-family:var(--mono);white-space:nowrap;letter-spacing:.05em;}
-input[type=range]{width:150px;accent-color:var(--accent);cursor:pointer;}
-.wk-num{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--accent);min-width:22px;}
-select{background:transparent;border:none;color:var(--text);font-family:var(--font);
-  font-size:13px;cursor:pointer;outline:none;}
+  border:1px solid var(--border);border-radius:8px;padding:7px 13px;}
+.ctrl label{font-size:11px;color:var(--muted);font-family:var(--mono);white-space:nowrap;letter-spacing:.04em;}
+input[type=range]{width:140px;accent-color:var(--accent);cursor:pointer;}
+.wk-num{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--accent);min-width:22px;}
+select{background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;outline:none;}
 select option{background:var(--bg2);}
-
-/* pills */
-.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-.pill{padding:4px 11px;border-radius:20px;font-size:12px;font-family:var(--mono);
-  border:1px solid var(--border);cursor:pointer;background:var(--bg2);
-  color:var(--muted);transition:all .15s;}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-family:var(--mono);
+  border:1px solid var(--border);cursor:pointer;background:var(--bg2);color:var(--muted);transition:all .15s;}
 .pill:hover{border-color:rgba(255,255,255,.2);color:var(--text);}
 .pill.on{color:#fff;border-color:transparent;font-weight:500;}
-
-/* legend */
-.legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;font-size:12px;color:var(--muted);}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:11px;color:var(--muted);}
 .legend span{display:flex;align-items:center;gap:5px;}
-.ld{width:18px;height:2px;display:inline-block;border-radius:2px;}
-
-/* chart grid */
-.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
+.ld{width:16px;height:2px;display:inline-block;border-radius:2px;}
+.note{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.18);
+  border-radius:8px;padding:9px 13px;font-size:12px;color:#9ab5e8;
+  font-family:var(--mono);margin-bottom:12px;line-height:1.6;}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;}
 @media(max-width:640px){.cgrid{grid-template-columns:1fr;}}
-.ccard{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;}
-.clabel{font-size:11px;font-family:var(--mono);color:var(--muted);
-  text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
-.cwrap{position:relative;height:240px;}
-
-/* note box */
-.note{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.2);
-  border-radius:8px;padding:10px 14px;font-size:12px;color:#9ab5e8;
-  font-family:var(--mono);margin-bottom:14px;line-height:1.6;}
-
-/* metric cards */
-.mcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:14px;}
-.mcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  padding:12px 14px;position:relative;overflow:hidden;}
+.ccard{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.clabel{font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:10px;}
+.cwrap{position:relative;height:230px;}
+.mcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:12px;}
+.mcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;position:relative;overflow:hidden;}
 .mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--c,var(--accent));}
-.msid{font-size:11px;font-family:var(--mono);color:var(--muted);margin-bottom:5px;
-  display:flex;align-items:center;gap:5px;}
+.msid{font-size:11px;font-family:var(--mono);color:var(--muted);margin-bottom:5px;display:flex;align-items:center;gap:4px;}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
 .mvals{display:flex;align-items:baseline;gap:5px;}
-.mbig{font-size:23px;font-weight:500;}
+.mbig{font-size:22px;font-weight:500;}
 .munit{font-size:11px;color:var(--muted);}
-.mgrade{font-size:19px;font-weight:400;color:var(--muted);}
+.mgrade{font-size:18px;color:var(--muted);}
 .mresult{font-size:11px;font-family:var(--mono);margin-top:4px;font-weight:500;}
 .mactual{font-size:10px;color:var(--muted);margin-top:2px;}
-.mdiff{font-size:10px;font-family:var(--mono);margin-top:3px;padding:2px 6px;
-  border-radius:4px;display:inline-block;}
-
+.mdiff{font-size:10px;font-family:var(--mono);margin-top:3px;padding:2px 6px;border-radius:4px;display:inline-block;}
 /* eval */
-.eccard{background:var(--bg2);border:1px solid var(--border);border-radius:12px;
-  padding:16px;margin-bottom:16px;}
-.ewrap{position:relative;height:220px;}
-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--bg2);
+.eval-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+@media(max-width:640px){.eval-grid{grid-template-columns:1fr;}}
+.eccard{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.ewrap{position:relative;height:200px;}
+table{width:100%;border-collapse:collapse;font-size:12px;background:var(--bg2);
   border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-th{text-align:left;padding:10px 14px;font-size:11px;font-family:var(--mono);color:var(--muted);
-  text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);background:var(--bg3);}
-td{padding:9px 14px;border-bottom:1px solid var(--border);}
+th{text-align:left;padding:9px 12px;font-size:11px;font-family:var(--mono);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);background:var(--bg3);}
+td{padding:8px 12px;border-bottom:1px solid var(--border);}
 tr:last-child td{border-bottom:none;}
-.bar-wrap{background:var(--bg3);border-radius:3px;height:6px;width:80px;overflow:hidden;}
+.bar-wrap{background:var(--bg3);border-radius:3px;height:5px;width:70px;overflow:hidden;display:inline-block;}
 .bar-fill{height:100%;border-radius:3px;}
-.badge{display:inline-block;padding:2px 8px;border-radius:12px;
-  font-size:11px;font-family:var(--mono);font-weight:500;}
-
-/* loading / error */
+.badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-family:var(--mono);font-weight:500;}
+.group-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px;}
+.gcard{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.gcard .gtitle{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:8px;}
+.gcard .gstat{font-size:22px;font-weight:500;margin-bottom:2px;}
+.gcard .gsub{font-size:11px;color:var(--muted);}
 #loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:14px;z-index:999;}
-#loading .sp{width:34px;height:34px;border:2px solid var(--border);
-  border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-#loading p{font-family:var(--mono);font-size:13px;color:var(--muted);}
+  align-items:center;justify-content:center;gap:12px;z-index:999;}
+#loading .sp{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .8s linear infinite;}
+#loading p{font-family:var(--mono);font-size:12px;color:var(--muted);}
 @keyframes spin{to{transform:rotate(360deg);}}
-#err{display:none;max-width:540px;margin:80px auto;background:var(--bg2);
-  border:1px solid var(--border);border-radius:14px;padding:32px;text-align:center;}
+#err{display:none;max-width:500px;margin:80px auto;background:var(--bg2);
+  border:1px solid var(--border);border-radius:14px;padding:28px;text-align:center;}
 #err h2{color:var(--red);margin-bottom:10px;}
-#err pre{background:var(--bg3);border-radius:8px;padding:14px;font-family:var(--mono);
-  font-size:12px;color:var(--muted);text-align:left;white-space:pre-wrap;margin-top:14px;}
+#err pre{background:var(--bg3);border-radius:8px;padding:12px;font-family:var(--mono);
+  font-size:11px;color:var(--muted);text-align:left;white-space:pre-wrap;margin-top:12px;}
 </style>
 </head>
 <body>
-
 <div id="loading"><div class="sp"></div><p>Loading results.json…</p></div>
-
-<div id="err">
-  <h2>Cannot load results.json</h2>
+<div id="err"><h2>Cannot load results.json</h2>
   <p>Run <code>python 01_train_and_predict.py</code> first, then serve with<br>
-  <code>python -m http.server 8000</code> and open <code>http://localhost:8000/dashboard.html</code></p>
-  <pre id="errtxt"></pre>
-</div>
-
+  <code>python -m http.server 8000</code></p><pre id="errtxt"></pre></div>
 <div id="app" style="display:none">
 <header>
-  <div class="logo">student-risk-dashboard <span>/ two-path model</span></div>
+  <div class="logo">GradeCast <span>/ risk &amp; grade trajectory</span></div>
   <div class="hmeta" id="hm">—</div>
 </header>
-
 <div class="main">
   <div class="tabs">
     <button class="tab on"  onclick="showTab('live')">Live prediction</button>
     <button class="tab"     onclick="showTab('horizon')">From fixed week</button>
     <button class="tab"     onclick="showTab('eval')">Evaluation</button>
+    <button class="tab"     onclick="showTab('groups')">Group breakdown</button>
   </div>
 
   <!-- LIVE -->
   <div class="panel on" id="panel-live">
-    <div class="note">
-      SOLID LINE = observed trajectory (real data accumulates each week) &nbsp;·&nbsp;
-      DASHED LINE = prediction frozen at the current week (stale data projected forward) &nbsp;·&nbsp;
-      The two lines diverge because the dashed line cannot see future engagement data.
-    </div>
+    <div class="note">SOLID = observed (real data accumulates each week) · DASHED = prediction frozen at current week · Lines diverge because frozen data cannot see future engagement</div>
     <div class="ctrl-bar">
       <div class="ctrl">
         <label>CURRENT WEEK</label>
@@ -160,24 +126,19 @@ tr:last-child td{border-bottom:none;}
     <div class="legend">
       <span><span class="ld" style="background:var(--red)"></span>At-risk (Withdrawn/Fail)</span>
       <span><span class="ld" style="background:var(--green)"></span>Passing (Pass/Distinction)</span>
-      <span><span class="ld" style="background:var(--muted)"></span>── observed so far</span>
-      <span>╌╌ predicted ahead (frozen data)</span>
+      <span>── observed &nbsp;╌╌ predicted ahead</span>
       <span><span style="width:14px;height:2px;background:var(--accent);display:inline-block;border-radius:2px"></span>current week</span>
     </div>
     <div class="cgrid">
       <div class="ccard"><div class="clabel">Risk probability</div><div class="cwrap"><canvas id="c-risk"></canvas></div></div>
-      <div class="ccard"><div class="clabel">Predicted grade (0 – 100)</div><div class="cwrap"><canvas id="c-grade"></canvas></div></div>
+      <div class="ccard"><div class="clabel">Predicted grade (0–100)</div><div class="cwrap"><canvas id="c-grade"></canvas></div></div>
     </div>
     <div class="mcards" id="mcards"></div>
   </div>
 
   <!-- HORIZON -->
   <div class="panel" id="panel-horizon">
-    <div class="note">
-      Choose a snapshot week. The SOLID lines show what the model predicted for all future weeks
-      using only data frozen at that snapshot. The FADED lines show what actually happened (observed).
-      Gaps between them show what the model got wrong due to missing future engagement data.
-    </div>
+    <div class="note">Solid = predicted from frozen snapshot · Faded dashed = actual observed trajectory · Gap between them = what the model missed by not seeing future data</div>
     <div class="ctrl-bar">
       <div class="ctrl">
         <label>SNAPSHOT WEEK</label>
@@ -189,47 +150,75 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
     <div class="pills" id="pills-horizon"></div>
-    <div class="legend">
-      <span>── predicted from snapshot (frozen data)</span>
-      <span style="opacity:.5">╌╌ actual observed trajectory (faded)</span>
-    </div>
     <div class="cgrid">
       <div class="ccard"><div class="clabel">Risk probability</div><div class="cwrap"><canvas id="h-risk"></canvas></div></div>
-      <div class="ccard"><div class="clabel">Predicted grade (0 – 100)</div><div class="cwrap"><canvas id="h-grade"></canvas></div></div>
+      <div class="ccard"><div class="clabel">Predicted grade (0–100)</div><div class="cwrap"><canvas id="h-grade"></canvas></div></div>
     </div>
   </div>
 
   <!-- EVAL -->
   <div class="panel" id="panel-eval">
-    <div class="note">
-      Evaluation is on the OBSERVED trajectory — using real accumulated data at each week.
-      Risk accuracy and AUC improve as more weeks of data accumulate.
-      Grade MAE drops sharply once assessment scores are available.
-    </div>
-    <div class="eccard">
-      <div class="legend" style="margin-bottom:10px">
-        <span><span class="ld" style="background:var(--accent)"></span>Risk accuracy</span>
-        <span><span class="ld" style="background:var(--green)"></span>Risk AUC</span>
-        <span><span class="ld" style="background:var(--amber)"></span>Grade MAE (scaled ÷15)</span>
+    <div class="note">All 39 weeks evaluated · Solid = test set · Dashed = validation set · Both show same improving trend confirming the model generalises</div>
+    <div class="eval-grid">
+      <div class="eccard">
+        <div class="clabel">Risk accuracy — test vs validation</div>
+        <div class="legend">
+          <span><span class="ld" style="background:var(--accent)"></span>Test</span>
+          <span><span class="ld" style="background:var(--accent);opacity:.4"></span>Validation</span>
+        </div>
+        <div class="ewrap"><canvas id="c-acc"></canvas></div>
       </div>
-      <div class="ewrap"><canvas id="c-eval"></canvas></div>
+      <div class="eccard">
+        <div class="clabel">Risk AUC — test vs validation</div>
+        <div class="legend">
+          <span><span class="ld" style="background:var(--green)"></span>Test</span>
+          <span><span class="ld" style="background:var(--green);opacity:.4"></span>Validation</span>
+        </div>
+        <div class="ewrap"><canvas id="c-auc"></canvas></div>
+      </div>
+      <div class="eccard">
+        <div class="clabel">Grade MAE — test vs validation</div>
+        <div class="legend">
+          <span><span class="ld" style="background:var(--amber)"></span>Test</span>
+          <span><span class="ld" style="background:var(--amber);opacity:.4"></span>Validation</span>
+        </div>
+        <div class="ewrap"><canvas id="c-mae"></canvas></div>
+      </div>
+      <div class="eccard" style="overflow-y:auto;max-height:260px;padding:0;">
+        <table>
+          <thead><tr><th>Wk</th><th>Test Acc</th><th>Val Acc</th><th>Test AUC</th><th>Test MAE</th></tr></thead>
+          <tbody id="etbody"></tbody>
+        </table>
+      </div>
     </div>
-    <table>
-      <thead><tr><th>Week</th><th>Risk accuracy</th><th>Risk AUC</th><th>Grade MAE</th><th>Status</th></tr></thead>
-      <tbody id="etbody"></tbody>
-    </table>
   </div>
-</div><!-- /main -->
-</div><!-- /app -->
+
+  <!-- GROUPS -->
+  <div class="panel" id="panel-groups">
+    <div class="note">Per-outcome-group breakdown across all 39 weeks · Shows which student group the model handles best and where it struggles</div>
+    <div class="ctrl-bar">
+      <div class="ctrl"><label>WEEK</label>
+        <input type="range" id="grpWk" min="1" max="39" value="20" step="1" oninput="setGrpWeek(this.value)">
+        <span class="wk-num" id="grpWkNum">20</span>
+      </div>
+    </div>
+    <div class="group-grid" id="group-cards"></div>
+    <div class="cgrid" style="margin-top:14px;">
+      <div class="ccard"><div class="clabel">Risk accuracy per group (all weeks)</div><div class="cwrap"><canvas id="g-acc"></canvas></div></div>
+      <div class="ccard"><div class="clabel">Grade MAE per group (all weeks)</div><div class="cwrap"><canvas id="g-mae"></canvas></div></div>
+    </div>
+  </div>
+</div>
+</div>
 
 <script>
-const WEEKS = Array.from({length:39},(_,i)=>i+1);
-const RCOLS = ['#e05555','#c0392b','#e84393','#a93226'];
-const PCOLS = ['#3ec98e','#4f8ef7','#27ae60','#1a6bb5'];
-let DATA=null, selL=new Set(), selH=new Set(), curW=1;
-let cR,cG,hR,hG,cE;
+const WEEKS=Array.from({length:39},(_,i)=>i+1);
+const RCOLS=['#e05555','#c0392b','#e84393','#a93226'];
+const PCOLS=['#3ec98e','#4f8ef7','#27ae60','#1a6bb5'];
+const GCOLS={Pass:'#3ec98e',Fail:'#e05555',Withdrawn:'#e6a235',Distinction:'#a78bfa'};
+let DATA=null,selL=new Set(),selH=new Set(),curW=1,grpW=20;
+let cR,cG,hR,hG,cAcc,cAuc,cMae,gAcc,gMae;
 
-// ── LOAD ──────────────────────────────────────────────────────────
 fetch('results.json')
   .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
   .then(j=>{DATA=j;init();})
@@ -242,30 +231,27 @@ fetch('results.json')
 function sids(){return Object.keys(DATA.students);}
 function gc(sid){const s=DATA.students[sid],p=s.true_risk?RCOLS:PCOLS;return p[sids().indexOf(sid)%p.length];}
 function ha(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
-function t2a(obj){
-  const a=new Array(39).fill(null);
-  Object.entries(obj).forEach(([w,v])=>{const i=parseInt(w)-1;if(i>=0&&i<39)a[i]=v;});
-  return a;
-}
+function t2a(obj){const a=new Array(39).fill(null);Object.entries(obj||{}).forEach(([w,v])=>{const i=parseInt(w)-1;if(i>=0&&i<39)a[i]=v;});return a;}
+function nearestSnap(prefix){if(curW>=20)return prefix+'w20';if(curW>=10)return prefix+'w10';return prefix+'w1';}
 
 function init(){
   document.getElementById('loading').style.display='none';
   document.getElementById('app').style.display='block';
   const ids=sids();
+  const m=DATA.meta;
+  document.getElementById('hm').textContent=
+    `train:${m.n_train} · val:${m.n_val} · test:${m.n_test} · modules AAA/BBB/CCC · 2013J`;
   const fr=ids.find(s=>DATA.students[s].true_risk===1);
   const fp=ids.find(s=>DATA.students[s].true_risk===0);
   if(fr){selL.add(fr);selH.add(fr);}
   if(fp){selL.add(fp);selH.add(fp);}
-  document.getElementById('hm').textContent=`${ids.length} students · modules AAA/BBB/CCC · 2013J`;
   buildPills('pills-live',selL,refreshLive);
   buildPills('pills-horizon',selH,refreshHorizon);
   initCharts();
-  refreshLive();
-  refreshHorizon();
-  buildEvalTable();
+  refreshLive();refreshHorizon();
+  buildEvalTable();buildGroupCards();buildGroupCharts();
 }
 
-// ── PILLS ─────────────────────────────────────────────────────────
 function buildPills(id,sel,cb){
   const el=document.getElementById(id);el.innerHTML='';
   sids().forEach(sid=>{
@@ -278,25 +264,20 @@ function buildPills(id,sel,cb){
   });
 }
 
-// ── CHART BASE ────────────────────────────────────────────────────
 const gc2='rgba(255,255,255,0.04)';
-const tk={color:'#6b7080',font:{size:11,family:"'DM Mono',monospace"}};
-const noLeg={
-  responsive:true,maintainAspectRatio:false,animation:false,
-  plugins:{legend:{display:false},tooltip:{
-    backgroundColor:'#1a1e2a',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,
+const tk={color:'#6b7080',font:{size:10,family:"'DM Mono',monospace"}};
+const noLeg={responsive:true,maintainAspectRatio:false,animation:false,
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1e2a',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,
     titleColor:'#e8eaf0',bodyColor:'#9aa0b0',
-    titleFont:{family:"'DM Mono',monospace",size:11},bodyFont:{family:"'DM Mono',monospace",size:11},
-    callbacks:{label:ctx=>{
-      if(ctx.dataset.label.startsWith('_'))return null;
-      const v=ctx.raw;if(v==null)return null;
+    titleFont:{family:"'DM Mono',monospace",size:10},bodyFont:{family:"'DM Mono',monospace",size:10},
+    callbacks:{label:ctx=>{if(ctx.dataset.label.startsWith('_'))return null;const v=ctx.raw;if(v==null)return null;
       const isR=ctx.chart.scales.y.max<=1;
-      return `${ctx.dataset.label}: ${isR?Math.round(v*100)+'%':v.toFixed(1)}`;
-    }},filter:i=>!i.dataset.label.startsWith('_')
-  }}
-};
-function axR(){return {x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc2}},y:{min:0,max:1,ticks:{...tk,callback:v=>`${Math.round(v*100)}%`},grid:{color:gc2}}};}
-function axG(){return {x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc2}},y:{min:0,max:100,ticks:{...tk},grid:{color:gc2}}};}
+      return `${ctx.dataset.label}: ${isR?Math.round(v*100)+'%':v.toFixed(1)}`;}},
+    filter:i=>!i.dataset.label.startsWith('_')}}};
+function axR(){return{x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc2}},y:{min:0,max:1,ticks:{...tk,callback:v=>`${Math.round(v*100)}%`},grid:{color:gc2}}};}
+function axG(){return{x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc2}},y:{min:0,max:100,ticks:{...tk},grid:{color:gc2}}};}
+function axPct(){return{x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc2}},y:{min:0,max:1,ticks:{...tk,callback:v=>`${Math.round(v*100)}%`},grid:{color:gc2}}};}
+function axMae(){return{x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc2}},y:{min:0,ticks:{...tk},grid:{color:gc2}}};}
 
 function initCharts(){
   cR=new Chart(document.getElementById('c-risk'),{type:'line',data:{labels:WEEKS,datasets:[]},options:{...noLeg,scales:axR()}});
@@ -304,170 +285,136 @@ function initCharts(){
   hR=new Chart(document.getElementById('h-risk'),{type:'line',data:{labels:WEEKS,datasets:[]},options:{...noLeg,scales:axR()}});
   hG=new Chart(document.getElementById('h-grade'),{type:'line',data:{labels:WEEKS,datasets:[]},options:{...noLeg,scales:axG()}});
 
-  const ew=DATA.eval.map(e=>e.week);
-  cE=new Chart(document.getElementById('c-eval'),{
-    type:'line',
-    data:{labels:ew,datasets:[
-      {label:'Risk accuracy',data:DATA.eval.map(e=>e.risk_acc),borderColor:'#4f8ef7',borderWidth:2,pointRadius:4,pointBackgroundColor:'#4f8ef7',fill:false,tension:0.3},
-      {label:'Risk AUC',data:DATA.eval.map(e=>e.risk_auc),borderColor:'#3ec98e',borderWidth:2,borderDash:[5,3],pointRadius:4,pointBackgroundColor:'#3ec98e',fill:false,tension:0.3},
-      {label:'Grade MAE ÷15',data:DATA.eval.map(e=>e.grade_mae!=null?+(e.grade_mae/15).toFixed(3):null),borderColor:'#e6a235',borderWidth:2,borderDash:[2,2],pointRadius:4,pointBackgroundColor:'#e6a235',fill:false,tension:0.3}
-    ]},
-    options:{...noLeg,
-      plugins:{...noLeg.plugins,tooltip:{...noLeg.plugins.tooltip,callbacks:{label:ctx=>{
-        const v=ctx.raw;if(v==null)return null;
-        if(ctx.dataset.label.includes('MAE'))return `Grade MAE: ${(v*15).toFixed(1)}`;
-        return `${ctx.dataset.label}: ${(v*100).toFixed(0)}%`;
-      }}}},
-      scales:{x:{ticks:{...tk}},y:{min:0,max:1.05,ticks:{...tk,callback:v=>v<=1?`${Math.round(v*100)}%`:''},grid:{color:gc2}}}}
-  });
+  const te=DATA.test_eval,ve=DATA.val_eval;
+  const ew=te.map(e=>e.week);
+  const mkEvalOpts=(ax)=>({...noLeg,scales:ax,plugins:{...noLeg.plugins,legend:{display:false},
+    tooltip:{...noLeg.plugins.tooltip,callbacks:{label:ctx=>{const v=ctx.raw;if(v==null)return null;
+      const isP=ctx.chart.scales.y.max<=1;return `${ctx.dataset.label}: ${isP?Math.round(v*100)+'%':v.toFixed(2)}`}}}}});
+
+  cAcc=new Chart(document.getElementById('c-acc'),{type:'line',data:{labels:ew,datasets:[
+    {label:'Test',data:te.map(e=>e.risk_acc),borderColor:'#4f8ef7',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'Validation',data:ve.map(e=>e.risk_acc),borderColor:'#4f8ef7',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3,opacity:.4}
+  ]},options:mkEvalOpts(axPct())});
+  cAuc=new Chart(document.getElementById('c-auc'),{type:'line',data:{labels:ew,datasets:[
+    {label:'Test',data:te.map(e=>e.risk_auc),borderColor:'#3ec98e',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'Validation',data:ve.map(e=>e.risk_auc),borderColor:'#3ec98e',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3}
+  ]},options:mkEvalOpts(axPct())});
+  cMae=new Chart(document.getElementById('c-mae'),{type:'line',data:{labels:ew,datasets:[
+    {label:'Test',data:te.map(e=>e.grade_mae),borderColor:'#e6a235',borderWidth:2,pointRadius:0,fill:false,tension:0.3},
+    {label:'Validation',data:ve.map(e=>e.grade_mae),borderColor:'#e6a235',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:0.3}
+  ]},options:mkEvalOpts(axMae())});
+
+  // Group charts
+  const grps=Object.keys(DATA.group_eval);
+  gAcc=new Chart(document.getElementById('g-acc'),{type:'line',data:{labels:WEEKS,datasets:
+    grps.map(g=>({label:g,data:DATA.group_eval[g].eval.map(e=>e.risk_acc),borderColor:GCOLS[g]||'#aaa',borderWidth:2,pointRadius:0,fill:false,tension:0.3}))
+  },options:{...noLeg,scales:axPct(),plugins:{...noLeg.plugins,legend:{display:true,labels:{color:'#6b7080',font:{size:10,family:"'DM Mono',monospace"}}}}}});
+  gMae=new Chart(document.getElementById('g-mae'),{type:'line',data:{labels:WEEKS,datasets:
+    grps.map(g=>({label:g,data:DATA.group_eval[g].eval.map(e=>e.grade_mae),borderColor:GCOLS[g]||'#aaa',borderWidth:2,pointRadius:0,fill:false,tension:0.3}))
+  },options:{...noLeg,scales:axMae(),plugins:{...noLeg.plugins,legend:{display:true,labels:{color:'#6b7080',font:{size:10,family:"'DM Mono',monospace"}}}}}});
 }
 
-// ── LIVE — two-path datasets ───────────────────────────────────────
-// solid   = observed up to curW (PATH A: real data)
-// dashed  = frozen prediction from curW forward (PATH B: stale data)
-// The dashed line at week T uses data frozen at curW, so when
-// the real week T comes on the solid line it has more data → they differ.
-function makeLiveSets(obsKey, predKey, maxY){
+function makeLiveSets(obsKey,predKey,maxY){
   const ds=[];
   selL.forEach(sid=>{
     const s=DATA.students[sid],c=gc(sid);
-    const obs  = t2a(s[obsKey]);
-    const pred = t2a(s[predKey]||{});
-
-    // Solid: observed values up to and including curW
-    const solidData = obs.map((v,i)=> i<=curW-1 ? v : null);
-
-    // Dashed: frozen prediction from curW onwards
-    // pred[curW-1] = prediction at curW using curW's frozen data
-    // pred[curW], pred[curW+1]... = projection forward with stale data
-    const dashData = pred.map((v,i)=> i>=curW-1 ? v : null);
-
-    ds.push({
-      data:dashData,label:'_dash',
-      borderColor:c,borderWidth:1.5,borderDash:[5,3],
-      pointRadius:0,fill:false,tension:0.3
-    });
-    ds.push({
-      data:solidData,
-      label:`${sid.toString().slice(-5)} · ${s.true_result}`,
-      borderColor:c,borderWidth:2.5,
-      pointRadius:0,fill:false,tension:0.3
-    });
+    const obs=t2a(s[obsKey]),pred=t2a(s[predKey]||{});
+    const solidData=obs.map((v,i)=>i<=curW-1?v:null);
+    const dashData=pred.map((v,i)=>i>=curW-1?v:null);
+    ds.push({data:dashData,label:'_dash',borderColor:c,borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false,tension:0.3});
+    ds.push({data:solidData,label:`${sid.toString().slice(-5)} · ${s.true_result}`,borderColor:c,borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
   });
-  ds.push({data:WEEKS.map(w=>w===curW?maxY:null),label:'_vl',
-    borderColor:'#4f8ef7',borderWidth:1,borderDash:[2,2],pointRadius:0,fill:false});
+  ds.push({data:WEEKS.map(w=>w===curW?maxY:null),label:'_vl',borderColor:'#4f8ef7',borderWidth:1,borderDash:[2,2],pointRadius:0,fill:false});
   return ds;
 }
-
-// Build per-week frozen prediction key
-// We store snapshots at w1,w10,w20. For the live panel we use the
-// nearest available snapshot ≤ curW as the frozen baseline.
-function nearestSnapKey(prefix){
-  if(curW>=20)return prefix+'w20';
-  if(curW>=10)return prefix+'w10';
-  return prefix+'w1';
-}
-
 function refreshLive(){
-  const rKey=nearestSnapKey('risk_');
-  const gKey=nearestSnapKey('grade_');
-  cR.data.datasets=makeLiveSets('risk_obs',rKey,1);
-  cG.data.datasets=makeLiveSets('grade_obs',gKey,100);
-  cR.update('none');cG.update('none');
-  updateMetricCards();
+  cR.data.datasets=makeLiveSets('risk_obs',nearestSnap('risk_'),1);
+  cG.data.datasets=makeLiveSets('grade_obs',nearestSnap('grade_'),100);
+  cR.update('none');cG.update('none');updateMetricCards();
 }
-
-// ── METRIC CARDS ──────────────────────────────────────────────────
 function updateMetricCards(){
   const el=document.getElementById('mcards');el.innerHTML='';
   selL.forEach(sid=>{
     const s=DATA.students[sid],c=gc(sid);
     const w=curW.toString();
-    const rObs =Math.round((s.risk_obs[w]||0)*100);
-    const gObs =(s.grade_obs[w]||0).toFixed(1);
-    // Frozen prediction at curW
-    const rKey=nearestSnapKey('risk_');
-    const gKey=nearestSnapKey('grade_');
-    const rPred=Math.round((s[rKey]&&s[rKey][w]!=null?s[rKey][w]:s.risk_obs[w])*100);
-    const gPred=((s[gKey]&&s[gKey][w]!=null?s[gKey][w]:s.grade_obs[w])||0).toFixed(1);
-    const rDiff=rObs-rPred;
-    const gDiff=(parseFloat(gObs)-parseFloat(gPred)).toFixed(1);
+    const rObs=Math.round((s.risk_obs[w]||0)*100);
+    const gObs=(s.grade_obs[w]||0).toFixed(1);
+    const rKey=nearestSnap('risk_'),gKey=nearestSnap('grade_');
+    const rPred=Math.round(((s[rKey]&&s[rKey][w]!=null)?s[rKey][w]:s.risk_obs[w])*100);
+    const gPred=(((s[gKey]&&s[gKey][w]!=null)?s[gKey][w]:s.grade_obs[w])||0).toFixed(1);
+    const rDiff=rObs-rPred,gDiff=(parseFloat(gObs)-parseFloat(gPred)).toFixed(1);
     const rc=s.true_risk?'var(--red)':'var(--green)';
-    const diffCol=Math.abs(rDiff)>5?'rgba(230,162,53,.15)':'rgba(255,255,255,.05)';
-    const diffTxt=Math.abs(rDiff)>5?'#e6a235':'var(--muted)';
-    el.innerHTML+=`
-      <div class="mcard" style="--c:${c}">
-        <div class="msid"><span class="dot" style="background:${c}"></span>${sid.toString().slice(-5)}</div>
-        <div class="mvals"><span class="mbig" style="color:${c}">${rObs}%</span><span class="munit">risk</span>
-          <span class="mgrade">${gObs}</span><span class="munit">grade</span></div>
-        <div class="mresult" style="color:${rc}">${s.true_result}</div>
-        <div class="mactual">actual grade: ${s.true_grade}</div>
-        <div class="mdiff" style="background:${diffCol};color:${diffTxt}">
-          obs vs pred Δrisk: ${rDiff>0?'+':''}${rDiff}pp · Δgrade: ${gDiff}</div>
-      </div>`;
+    const dc=Math.abs(rDiff)>5?'rgba(230,162,53,.15)':'rgba(255,255,255,.05)';
+    const dt=Math.abs(rDiff)>5?'#e6a235':'var(--muted)';
+    el.innerHTML+=`<div class="mcard" style="--c:${c}">
+      <div class="msid"><span class="dot" style="background:${c}"></span>${sid.toString().slice(-5)}</div>
+      <div class="mvals"><span class="mbig" style="color:${c}">${rObs}%</span><span class="munit">risk</span>
+        <span class="mgrade">${gObs}</span><span class="munit">grade</span></div>
+      <div class="mresult" style="color:${rc}">${s.true_result}</div>
+      <div class="mactual">actual: ${s.true_grade}</div>
+      <div class="mdiff" style="background:${dc};color:${dt}">Δrisk ${rDiff>0?'+':''}${rDiff}pp · Δgrade ${gDiff}</div>
+    </div>`;
   });
 }
-
-// ── HORIZON ───────────────────────────────────────────────────────
-function makeHorizonSets(rPredKey,gPredKey,snapWk){
+function makeHorizonSets(rk,gk,snap){
   const rds=[],gds=[];
   selH.forEach(sid=>{
     const s=DATA.students[sid],c=gc(sid);
-    rds.push({data:t2a(s.risk_obs),label:'_obs',
-      borderColor:ha(c,0.25),borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,tension:0.3});
-    rds.push({data:t2a(s[rPredKey]||{}),
-      label:`${sid.toString().slice(-5)} · ${s.true_result}`,
-      borderColor:c,borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
-    gds.push({data:t2a(s.grade_obs),label:'_obs',
-      borderColor:ha(c,0.25),borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,tension:0.3});
-    gds.push({data:t2a(s[gPredKey]||{}),
-      label:`${sid.toString().slice(-5)} · ${s.true_result}`,
-      borderColor:c,borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
+    rds.push({data:t2a(s.risk_obs),label:'_obs',borderColor:ha(c,.22),borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,tension:0.3});
+    rds.push({data:t2a(s[rk]||{}),label:`${sid.toString().slice(-5)} · ${s.true_result}`,borderColor:c,borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
+    gds.push({data:t2a(s.grade_obs),label:'_obs',borderColor:ha(c,.22),borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,tension:0.3});
+    gds.push({data:t2a(s[gk]||{}),label:`${sid.toString().slice(-5)} · ${s.true_result}`,borderColor:c,borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
   });
-  rds.push({data:WEEKS.map(w=>w===snapWk?1:null),label:'_vl',
-    borderColor:'#4f8ef7',borderWidth:1,borderDash:[2,2],pointRadius:0,fill:false});
-  gds.push({data:WEEKS.map(w=>w===snapWk?100:null),label:'_vl',
-    borderColor:'#4f8ef7',borderWidth:1,borderDash:[2,2],pointRadius:0,fill:false});
-  return {rds,gds};
+  rds.push({data:WEEKS.map(w=>w===snap?1:null),label:'_vl',borderColor:'#4f8ef7',borderWidth:1,borderDash:[2,2],pointRadius:0,fill:false});
+  gds.push({data:WEEKS.map(w=>w===snap?100:null),label:'_vl',borderColor:'#4f8ef7',borderWidth:1,borderDash:[2,2],pointRadius:0,fill:false});
+  return{rds,gds};
 }
-
 function refreshHorizon(){
   const snap=parseInt(document.getElementById('hSel').value);
-  const {rds,gds}=makeHorizonSets(`risk_w${snap}`,`grade_w${snap}`,snap);
-  hR.data.datasets=rds;hG.data.datasets=gds;
-  hR.update('none');hG.update('none');
+  const{rds,gds}=makeHorizonSets(`risk_w${snap}`,`grade_w${snap}`,snap);
+  hR.data.datasets=rds;hG.data.datasets=gds;hR.update('none');hG.update('none');
 }
-
-// ── EVAL TABLE ────────────────────────────────────────────────────
 function buildEvalTable(){
   const tb=document.getElementById('etbody');tb.innerHTML='';
   const show=new Set([1,5,10,15,20,25,30,35,39]);
-  DATA.eval.filter(e=>show.has(e.week)).forEach(e=>{
+  DATA.test_eval.filter(e=>show.has(e.week)).forEach((e,i)=>{
+    const ve=DATA.val_eval.find(v=>v.week===e.week)||{};
     const acc=Math.round((e.risk_acc||0)*100);
+    const vacc=Math.round((ve.risk_acc||0)*100);
     const auc=e.risk_auc!=null?(e.risk_auc*100).toFixed(0)+'%':'—';
     const mae=e.grade_mae!=null?e.grade_mae.toFixed(1):'—';
     const c=acc>=90?'#3ec98e':acc>=75?'#e6a235':'#e05555';
-    const lbl=acc>=90?'Excellent':acc>=75?'Good':'Learning';
     tb.innerHTML+=`<tr>
-      <td style="font-family:var(--mono)">Wk ${e.week}</td>
-      <td><div style="display:flex;align-items:center;gap:8px">
+      <td style="font-family:var(--mono)">W${e.week}</td>
+      <td><div style="display:flex;align-items:center;gap:6px">
         <div class="bar-wrap"><div class="bar-fill" style="width:${acc}%;background:${c}"></div></div>
-        <span style="font-family:var(--mono);font-size:12px">${acc}%</span></div></td>
-      <td style="font-family:var(--mono)">${auc}</td>
-      <td style="font-family:var(--mono)">${mae}</td>
-      <td><span class="badge" style="background:${c}22;color:${c}">${lbl}</span></td>
+        <span style="font-family:var(--mono);font-size:11px">${acc}%</span></div></td>
+      <td style="font-family:var(--mono);font-size:11px">${vacc}%</td>
+      <td style="font-family:var(--mono);font-size:11px">${auc}</td>
+      <td style="font-family:var(--mono);font-size:11px">${mae}</td>
     </tr>`;
   });
 }
-
-// ── NAV ───────────────────────────────────────────────────────────
-function setWeek(v){
-  curW=parseInt(v);
-  document.getElementById('wkNum').textContent=v;
-  refreshLive();
+function buildGroupCards(){
+  const el=document.getElementById('group-cards');el.innerHTML='';
+  Object.entries(DATA.group_eval).forEach(([grp,v])=>{
+    const r=v.eval.find(e=>e.week===grpW)||v.eval[0];
+    const acc=Math.round((r.risk_acc||0)*100);
+    const mae=(r.grade_mae||0).toFixed(1);
+    const c=GCOLS[grp]||'#aaa';
+    const ac=acc>=90?'#3ec98e':acc>=75?'#e6a235':'#e05555';
+    el.innerHTML+=`<div class="gcard" style="border-top:2px solid ${c}">
+      <div class="gtitle">${grp} <span style="color:var(--muted)">(n=${v.count})</span></div>
+      <div class="gstat" style="color:${ac}">${acc}%</div>
+      <div class="gsub">risk accuracy at week ${grpW}</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--muted)">Grade MAE: <span style="color:var(--text)">${mae}</span></div>
+    </div>`;
+  });
 }
+function setWeek(v){curW=parseInt(v);document.getElementById('wkNum').textContent=v;refreshLive();}
+function setGrpWeek(v){grpW=parseInt(v);document.getElementById('grpWkNum').textContent=v;buildGroupCards();}
 function showTab(id){
-  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('on',['live','horizon','eval'][i]===id);});
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('on',['live','horizon','eval','groups'][i]===id);});
   document.querySelectorAll('.panel').forEach(p=>{p.classList.toggle('on',p.id===`panel-${id}`);});
   if(id==='horizon'){buildPills('pills-horizon',selH,refreshHorizon);refreshHorizon();}
 }
