@@ -320,7 +320,17 @@ function makeLiveSets(obsKey,predKey,maxY){
     const s=DATA.students[sid],c=gc(sid);
     const obs=t2a(s[obsKey]),pred=t2a(s[predKey]||{});
     const solidData=obs.map((v,i)=>i<=curW-1?v:null);
-    const dashData=pred.map((v,i)=>i>=curW-1?v:null);
+
+    // FIX: force dashed line to start from the exact last observed value
+    // so there is no visual gap at the handover point.
+    // The observed value at curW-1 becomes the anchor for the dashed line.
+    const lastObserved = obs[curW-1];
+    const dashData=pred.map((v,i)=>{
+      if(i < curW-1) return null;
+      if(i === curW-1) return lastObserved != null ? lastObserved : v; // anchor to observed
+      return v;
+    });
+
     ds.push({data:dashData,label:'_dash',borderColor:c,borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false,tension:0.3});
     ds.push({data:solidData,label:`${sid.toString().slice(-5)} · ${s.true_result}`,borderColor:c,borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
   });
