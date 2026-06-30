@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GradeCast</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--border:rgba(255,255,255,0.08);--text:#e8eaf0;--muted:#7a8090;--accent:#4f8ef7;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;}
+.logo{font-family:var(--mono);color:var(--accent);font-size:15px;margin-bottom:6px;}
+h1{font-size:30px;font-weight:700;margin-bottom:8px;text-align:center;}
+.tag{color:var(--muted);margin-bottom:36px;text-align:center;max-width:560px;line-height:1.6;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:840px;width:100%;}
+.rc{background:linear-gradient(160deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:16px;padding:24px;text-decoration:none;color:var(--text);transition:.15s;position:relative;overflow:hidden;display:block;}
+.rc::after{content:'';position:absolute;left:0;top:0;right:0;height:3px;background:var(--c);}
+.rc:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.18);}
+.rc .ico{font-size:28px;margin-bottom:12px;}
+.rc h2{font-size:18px;font-weight:600;margin-bottom:7px;}
+.rc p{color:var(--muted);font-size:13px;line-height:1.6;}
+.rc .go{margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--accent);}
+.foot{margin-top:34px;color:var(--muted);font-family:var(--mono);font-size:11px;text-align:center;}
+</style>
+</head>
+<body>
+  <div class="logo">GradeCast</div>
+  <h1>Student success, early.</h1>
+  <p class="tag">Weekly risk and grade forecasts across every course — turned into the view each person needs.</p>
+  <div class="cards">
+    <a class="rc" style="--c:#3ec98e" href="dashboard_teacher.html">
+      <div class="ico">🧑‍🏫</div><h2>Teacher</h2>
+      <p>Your class watchlist: who needs attention this week, why, and what to do about it.</p>
+      <div class="go">Open class view →</div>
+    </a>
+    <a class="rc" style="--c:#e6a235" href="dashboard_leadership.html">
+      <div class="ico">📊</div><h2>Leadership</h2>
+      <p>Programme health, trends across terms, equity, and how far ahead support can reach.</p>
+      <div class="go">Open overview →</div>
+    </a>
+    <a class="rc" style="--c:#4f8ef7" href="dashboard_global.html">
+      <div class="ico">🔬</div><h2>Researcher</h2>
+      <p>The model internals: risk + grade forecast bands, calibration, coverage, per-module metrics.</p>
+      <div class="go">Open model view →</div>
+    </a>
+  </div>
+  <div class="foot">Forecasts are decision support, not deterministic predictions. Historical figures shown with hindsight; live use predicts ahead.</div>
+</body>
+</html>

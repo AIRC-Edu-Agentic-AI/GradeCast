@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GradeCast — Global Forecast (risk + grade)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--border:rgba(255,255,255,0.07);
+  --text:#e8eaf0;--muted:#6b7080;--accent:#4f8ef7;--red:#e05555;--green:#3ec98e;
+  --amber:#e6a235;--purple:#a78bfa;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.logo{font-family:var(--mono);font-size:13px;color:var(--accent);}
+.logo span{color:var(--muted);}
+.hmeta{font-size:11px;color:var(--muted);font-family:var(--mono);}
+.main{max-width:1180px;margin:0 auto;padding:20px 28px;}
+.note{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.18);border-radius:8px;padding:9px 13px;font-size:12px;color:#9ab5e8;font-family:var(--mono);margin-bottom:14px;line-height:1.6;}
+.scorecards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;}
+.sc{background:linear-gradient(160deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden;}
+.sc::after{content:'';position:absolute;left:0;top:0;right:0;height:3px;background:var(--c,var(--accent));opacity:.85;}
+.sc .lbl{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.sc .big{font-size:26px;font-weight:600;line-height:1;}
+.sc .sub{font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono);}
+.ctrl-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px;}
+.ctrl{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 13px;}
+.ctrl label{font-size:11px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em;}
+select{background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;outline:none;}
+#sel{min-width:260px;}
+select option{background:var(--bg2);}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;}
+@media(max-width:820px){.grid{grid-template-columns:1fr;}}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.clabel{font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
+.cwrap{position:relative;height:330px;}
+.legend{display:flex;flex-wrap:wrap;gap:11px;margin:10px 0;font-size:11px;color:var(--muted);}
+.legend span{display:flex;align-items:center;gap:5px;}
+.ld{width:15px;height:2px;display:inline-block;border-radius:2px;}
+.sw{width:15px;height:10px;display:inline-block;border-radius:2px;}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.kv:last-child{border-bottom:none;}
+.kv .k{color:var(--muted);font-family:var(--mono);font-size:11px;}
+.kv .v{font-family:var(--mono);font-size:12px;text-align:right;}
+table{width:100%;border-collapse:collapse;font-size:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+th{text-align:left;padding:8px 12px;font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);background:var(--bg3);}
+td{padding:7px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;}
+tr:last-child td{border-bottom:none;}
+#loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+#loading .sp{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#err{display:none;max-width:540px;margin:80px auto;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;text-align:center;}
+#err h2{color:var(--red);margin-bottom:10px;}
+#err pre{background:var(--bg3);border-radius:8px;padding:12px;font-family:var(--mono);font-size:11px;color:var(--muted);text-align:left;white-space:pre-wrap;margin-top:12px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-family:var(--mono);font-weight:500;}
+</style>
+</head>
+<body>
+<div id="loading"><div class="sp"></div><p style="font-family:var(--mono);font-size:12px;color:var(--muted)">Loading results_global.json…</p></div>
+<div id="err"><h2>Cannot load results_global.json</h2>
+  <p>Run <code>python global_pipeline.py</code> first (writes test_trajectories),<br>then serve with <code>python -m http.server 8000</code></p><pre id="errtxt"></pre></div>
+<div id="app" style="display:none">
+<header>
+  <div class="logo">GradeCast <span>/ global forecast · risk + grade in one graph</span></div>
+  <div class="hmeta" id="hm">—</div>
+</header>
+<div class="main">
+  <div class="note">One graph, two forecasts. LEFT axis = combined eventual at-risk (median + 50% likely ensemble band), decomposed into a <b>withdrawal</b> line (survival/hazard) and an <b>academic</b> line (P(fail | survive to exam)); combined = withdraw + (1−withdraw)·academic. RIGHT axis = predicted COURSEWORK score (median + 80% quantile cone) — the final exam is not in the dataset, so this is the continuous-assessment component only, not the official grade; the academic line carries the exam-decided pass/fail. Amber dashed = per-module alert threshold; amber spike = predicted withdrawal week; red spike = actual event week. Risk band is epistemic (bootstrap ensemble); coursework band is the quantile model's own 10/90.</div>
+  <div class="scorecards" id="scorecards"></div>
+  <div class="ctrl-bar">
+    <div class="ctrl"><label>MODULE</label><select id="fMod" onchange="repopulate()"></select></div>
+    <div class="ctrl"><label>OUTCOME</label><select id="fOut" onchange="repopulate()"></select></div>
+    <div class="ctrl"><label>STUDENT</label><select id="sel" onchange="render()"></select></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="clabel">Risk + grade forecast</div>
+      <div class="legend">
+        <span><span class="sw" style="background:rgba(79,142,247,.18)"></span>risk 80% band</span>
+        <span><span class="ld" style="background:#4f8ef7"></span>median risk</span>
+        <span><span class="sw" style="background:rgba(62,201,142,.16)"></span>coursework 80% cone</span>
+        <span><span class="ld" style="background:#3ec98e"></span>median coursework</span>
+        <span><span class="ld" style="background:#e6a235"></span>alert / withdrawal wk</span>
+        <span><span class="ld" style="background:#e05555"></span>actual event wk</span>
+      </div>
+      <div class="cwrap"><canvas id="chart"></canvas></div>
+    </div>
+    <div class="card"><div class="clabel">This student</div><div id="info"></div></div>
+  </div>
+  <div class="card">
+    <div class="clabel">Withdrawal-timing coverage per module (test) — raw vs calibrated (80% target)</div>
+    <table><thead><tr><th>Module</th><th>n (Withdrawn)</th><th>Raw</th><th>Calibrated</th><th>± wks</th></tr></thead>
+      <tbody id="covtbody"></tbody></table>
+  </div>
+</div>
+</div>
+<script>
+let DATA=null,chart=null,FILTERED=[];
+fetch('results_global.json').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+  .then(j=>{DATA=j;init();})
+  .catch(e=>{document.getElementById('loading').style.display='none';
+    document.getElementById('err').style.display='block';document.getElementById('errtxt').textContent=e.toString();});
+function ha(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+function thrOf(mod){return (DATA.meta.thresholds_per_module||{})[mod]||{};}
+function firstAlert(t){const T=thrOf(t.code_module);for(let i=0;i<t.weeks.length;i++){const w=t.weeks[i];if(t.risk_med[i]>=(T[w]??0.5))return w;}return null;}
+
+function init(){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='block';
+  const m=DATA.meta;
+  if(!DATA.test_trajectories){throw new Error('No test_trajectories in results_global.json — run global_pipeline.py');}
+  document.getElementById('hm').textContent=`global · ${m.n_students} students · ${m.n_test_regs} test · K=${m.K} · ${m.stratified?'stratified':'cluster'} bootstrap`;
+  // overall withdrawn calibrated coverage (mean across modules, weighted by n)
+  const wc=(DATA.coverage&&DATA.coverage.withdrawn_calibrated)||{};
+  let cn=0,cs=0; Object.values(wc).forEach(v=>{if(v.coverage!=null){cs+=v.coverage*v.n;cn+=v.n;}});
+  const o20=(DATA.overall_eval||[]).find(e=>e.week===20)||{};
+  document.getElementById('scorecards').innerHTML=[
+    {lbl:'Test students',big:DATA.test_trajectories.length,sub:'full trajectories',c:'#4f8ef7'},
+    {lbl:'Risk AUC · wk20',big:o20.risk_auc!=null?o20.risk_auc.toFixed(3):'—',sub:'overall, ranking',c:'#3ec98e'},
+    {lbl:'Coursework cov80 · wk20',big:o20.grade_cov80!=null?Math.round(o20.grade_cov80*100)+'%':'—',sub:'interval honesty',c:'#a78bfa'},
+    {lbl:'Withdrawal cov',big:cn?Math.round(cs/cn*100)+'%':'—',sub:'event-time, calibrated',c:'#e6a235'},
+  ].map(k=>`<div class="sc" style="--c:${k.c}"><div class="lbl">${k.lbl}</div><div class="big">${k.big}</div><div class="sub">${k.sub}</div></div>`).join('');
+  // filters
+  const mods=[...new Set(DATA.test_trajectories.map(t=>t.code_module))].sort();
+  document.getElementById('fMod').innerHTML='<option value="">all modules</option>'+mods.map(x=>`<option>${x}</option>`).join('');
+  const outs=[...new Set(DATA.test_trajectories.map(t=>t.true_result))].sort();
+  document.getElementById('fOut').innerHTML='<option value="">all outcomes</option>'+outs.map(x=>`<option>${x}</option>`).join('');
+  // coverage table
+  const wr=(DATA.coverage&&DATA.coverage.withdrawn_raw)||{};
+  document.getElementById('covtbody').innerHTML=Object.keys(wc).sort().map(mod=>{
+    const c=wc[mod].coverage,col=c==null?'#6b7080':c>=0.78?'#3ec98e':'#e05555';
+    const adj=(DATA.meta.q_adj_weeks_per_module||{})[mod];
+    return `<tr><td>${mod}</td><td>${wc[mod].n}</td><td>${wr[mod]&&wr[mod].coverage!=null?Math.round(wr[mod].coverage*100)+'%':'—'}</td>
+      <td style="color:${col}">${c!=null?Math.round(c*100)+'%':'—'}</td><td>+${adj??0}</td></tr>`;}).join('');
+  buildChart();repopulate();
+}
+function buildChart(){
+  const tk={color:'#6b7080',font:{size:10,family:"'DM Mono',monospace"}},gc='rgba(255,255,255,0.04)';
+  chart=new Chart(document.getElementById('chart'),{type:'line',data:{labels:[],datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{filter:i=>!i.dataset.label.startsWith('_'),
+        callbacks:{label:c=>{if(c.dataset.label.startsWith('_'))return null;
+          const v=c.raw;return c.dataset.yAxisID==='yRisk'?`${c.dataset.label}: ${Math.round(v*100)}%`:`${c.dataset.label}: ${v}`;}}}},
+      scales:{
+        x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc},title:{display:true,text:'course week',color:'#6b7080',font:{size:10}}},
+        yRisk:{position:'left',min:0,max:1,ticks:{...tk,callback:v=>Math.round(v*100)+'%'},grid:{color:gc},title:{display:true,text:'risk',color:'#4f8ef7',font:{size:10}}},
+        yGrade:{position:'right',min:0,max:100,ticks:tk,grid:{drawOnChartArea:false},title:{display:true,text:'coursework',color:'#3ec98e',font:{size:10}}}}}});
+}
+function repopulate(){
+  const fm=document.getElementById('fMod').value,fo=document.getElementById('fOut').value;
+  FILTERED=DATA.test_trajectories.filter(t=>(!fm||t.code_module===fm)&&(!fo||t.true_result===fo));
+  const sel=document.getElementById('sel');
+  sel.innerHTML=FILTERED.slice(0,2000).map((t,i)=>{
+    const g=t.true_grade!=null?` · grade ${t.true_grade}`:'';
+    return `<option value="${i}">${t.code_module} · ${t.true_result}${g} · ev wk ${t.event_week}</option>`;}).join('');
+  if(FILTERED.length>2000)sel.innerHTML+=`<option disabled>…${FILTERED.length-2000} more (narrow filters)</option>`;
+  render();
+}
+function render(){
+  if(!FILTERED.length){chart.data.datasets=[];chart.update('none');document.getElementById('info').innerHTML='<div class="kv"><span class="k">no students match</span></div>';return;}
+  const t=FILTERED[parseInt(document.getElementById('sel').value)||0];
+  const W=t.weeks,n=W.length;
+  const T=thrOf(t.code_module),thrLine=W.map(w=>T[w]??null);
+  const spike=(wk)=>W.map(w=>w===Math.round(wk)?1:null);
+  const ds=[];
+  // risk cone (yRisk)
+  let lo=ds.length; ds.push({data:t.risk_lo,label:'_rlo',yAxisID:'yRisk',borderColor:'transparent',borderWidth:0,pointRadius:0,fill:false,tension:0.3});
+  ds.push({data:t.risk_hi,label:'_rhi',yAxisID:'yRisk',borderColor:'transparent',borderWidth:0,pointRadius:0,backgroundColor:ha('#4f8ef7',.18),fill:lo,tension:0.3});
+  ds.push({data:t.risk_med,label:'combined risk',yAxisID:'yRisk',borderColor:'#4f8ef7',borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
+  // decomposed components (withdrawal vs academic/exam) — thin dashed
+  if(t.risk_wd_med)ds.push({data:t.risk_wd_med,label:'withdrawal risk',yAxisID:'yRisk',borderColor:ha('#e05555',.75),borderWidth:1.3,borderDash:[5,3],pointRadius:0,fill:false,tension:0.3});
+  if(t.risk_ac_med)ds.push({data:t.risk_ac_med,label:'academic risk',yAxisID:'yRisk',borderColor:ha('#a78bfa',.85),borderWidth:1.3,borderDash:[2,2],pointRadius:0,fill:false,tension:0.3});
+  // grade cone (yGrade)
+  lo=ds.length; ds.push({data:t.grade_lo,label:'_glo',yAxisID:'yGrade',borderColor:'transparent',borderWidth:0,pointRadius:0,fill:false,tension:0.3});
+  ds.push({data:t.grade_hi,label:'_ghi',yAxisID:'yGrade',borderColor:'transparent',borderWidth:0,pointRadius:0,backgroundColor:ha('#3ec98e',.16),fill:lo,tension:0.3});
+  ds.push({data:t.grade_med,label:'median grade',yAxisID:'yGrade',borderColor:'#3ec98e',borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
+  // alert threshold (risk axis)
+  ds.push({data:thrLine,label:'_thr',yAxisID:'yRisk',borderColor:ha('#e6a235',.55),borderWidth:1,borderDash:[6,4],pointRadius:0,fill:false,tension:0});
+  // markers
+  if(t.te_med<=W[n-1])ds.push({data:spike(t.te_med),label:'_temed',yAxisID:'yRisk',borderColor:'#e6a235',borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false});
+  if(t.event_flag)ds.push({data:spike(t.event_week),label:'_actual',yAxisID:'yRisk',borderColor:'#e05555',borderWidth:2,pointRadius:0,fill:false});
+  chart.data.labels=W;chart.data.datasets=ds;chart.update('none');
+  // info
+  const fa=firstAlert(t);
+  const cov=t.event_flag?(t.te_lo_cal<=t.event_week&&t.event_week<=t.te_hi_cal):null;
+  const yn=b=>b==null?'—':(b?'<span style="color:#3ec98e">yes</span>':'<span style="color:#e05555">no</span>');
+  const rc=t.true_result==='Pass'||t.true_result==='Distinction'?'#3ec98e':'#e05555';
+  document.getElementById('info').innerHTML=`
+    <div class="kv"><span class="k">module</span><span class="v">${t.code_module}</span></div>
+    <div class="kv"><span class="k">true result</span><span class="v"><span class="badge" style="background:${ha(rc,.15)};color:${rc}">${t.true_result}</span></span></div>
+    <div class="kv"><span class="k">actual coursework</span><span class="v">${t.true_grade??'—'}</span></div>
+    <div class="kv"><span class="k">final risk (combined)</span><span class="v">${Math.round(t.risk_med[n-1]*100)}% [${Math.round(t.risk_lo[n-1]*100)}–${Math.round(t.risk_hi[n-1]*100)}]</span></div>
+    ${t.risk_wd_med?`<div class="kv"><span class="k">&nbsp;&nbsp;↳ withdrawal / academic</span><span class="v">${Math.round(t.risk_wd_med[n-1]*100)}% / ${Math.round(t.risk_ac_med[n-1]*100)}%</span></div>`:''}
+    <div class="kv"><span class="k">final coursework (median)</span><span class="v">${t.grade_med[n-1]} [${t.grade_lo[n-1]}–${t.grade_hi[n-1]}]</span></div>
+    <div class="kv"><span class="k">alert</span><span class="v">${fa?`<span style="color:#e05555">flagged wk ${fa}</span>`:'<span style="color:#3ec98e">never</span>'}</span></div>
+    <div class="kv"><span class="k">predicted withdrawal wk</span><span class="v">${t.te_med}</span></div>
+    <div class="kv"><span class="k">event-time 80% (calib)</span><span class="v">wk ${t.te_lo_cal}–${t.te_hi_cal}</span></div>
+    <div class="kv"><span class="k">actual event wk</span><span class="v">${t.event_flag?t.event_week:'— (no event)'}</span></div>
+    <div class="kv"><span class="k">timing covered</span><span class="v">${yn(cov)}</span></div>`;
+}
+</script>
+</body>
+</html>
