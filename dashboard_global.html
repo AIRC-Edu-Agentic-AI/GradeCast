@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GradeCast — Global Forecast (risk + grade)</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--border:rgba(255,255,255,0.07);
-  --text:#e8eaf0;--muted:#6b7080;--accent:#4f8ef7;--red:#e05555;--green:#3ec98e;
-  --amber:#e6a235;--purple:#a78bfa;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+:root{--bg:#f4f6f9;--bg2:#ffffff;--bg3:#eef1f5;--border:#e2e7ee;
+  --text:#222a35;--muted:#66717f;--accent:#2c5f8a;--red:#c0504d;--green:#3f8f63;
+  --amber:#bf842b;--purple:#6d5aa8;--font:'DM Sans',sans-serif;--serif:'Source Serif 4',Georgia,serif;--mono:'DM Mono',monospace;
+  --shadow:0 1px 2px rgba(28,40,64,.05),0 3px 12px rgba(28,40,64,.05);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;}
 header{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--bg2);}
@@ -17,12 +18,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .logo span{color:var(--muted);}
 .hmeta{font-size:11px;color:var(--muted);font-family:var(--mono);}
 .main{max-width:1180px;margin:0 auto;padding:20px 28px;}
-.note{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.18);border-radius:8px;padding:9px 13px;font-size:12px;color:#9ab5e8;font-family:var(--mono);margin-bottom:14px;line-height:1.6;}
+.note{background:rgba(44,95,138,.06);border:1px solid rgba(44,95,138,.18);border-radius:8px;padding:9px 13px;font-size:12px;color:#3a4a5a;font-family:var(--mono);margin-bottom:14px;line-height:1.6;}
 .scorecards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px;}
-.sc{background:linear-gradient(160deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden;}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:15px 17px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
 .sc::after{content:'';position:absolute;left:0;top:0;right:0;height:3px;background:var(--c,var(--accent));opacity:.85;}
 .sc .lbl{font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
-.sc .big{font-size:26px;font-weight:600;line-height:1;}
+.sc .big{font-family:var(--serif);font-size:27px;font-weight:600;line-height:1;}
 .sc .sub{font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono);}
 .ctrl-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px;}
 .ctrl{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 13px;}
@@ -32,7 +33,7 @@ select{background:transparent;border:none;color:var(--text);font-family:var(--fo
 select option{background:var(--bg2);}
 .grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;}
 @media(max-width:820px){.grid{grid-template-columns:1fr;}}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:15px;box-shadow:var(--shadow);}
 .clabel{font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;}
 .cwrap{position:relative;height:330px;}
 .legend{display:flex;flex-wrap:wrap;gap:11px;margin:10px 0;font-size:11px;color:var(--muted);}
@@ -77,12 +78,12 @@ tr:last-child td{border-bottom:none;}
     <div class="card">
       <div class="clabel">Risk + grade forecast</div>
       <div class="legend">
-        <span><span class="sw" style="background:rgba(79,142,247,.18)"></span>risk 80% band</span>
-        <span><span class="ld" style="background:#4f8ef7"></span>median risk</span>
-        <span><span class="sw" style="background:rgba(62,201,142,.16)"></span>coursework 80% cone</span>
-        <span><span class="ld" style="background:#3ec98e"></span>median coursework</span>
-        <span><span class="ld" style="background:#e6a235"></span>alert / withdrawal wk</span>
-        <span><span class="ld" style="background:#e05555"></span>actual event wk</span>
+        <span><span class="sw" style="background:rgba(44,95,138,.18)"></span>risk 80% band</span>
+        <span><span class="ld" style="background:#2c5f8a"></span>median risk</span>
+        <span><span class="sw" style="background:rgba(63,143,99,.16)"></span>coursework 80% cone</span>
+        <span><span class="ld" style="background:#3f8f63"></span>median coursework</span>
+        <span><span class="ld" style="background:#bf842b"></span>alert / withdrawal wk</span>
+        <span><span class="ld" style="background:#c0504d"></span>actual event wk</span>
       </div>
       <div class="cwrap"><canvas id="chart"></canvas></div>
     </div>
@@ -116,10 +117,10 @@ function init(){
   let cn=0,cs=0; Object.values(wc).forEach(v=>{if(v.coverage!=null){cs+=v.coverage*v.n;cn+=v.n;}});
   const o20=(DATA.overall_eval||[]).find(e=>e.week===20)||{};
   document.getElementById('scorecards').innerHTML=[
-    {lbl:'Test students',big:DATA.test_trajectories.length,sub:'full trajectories',c:'#4f8ef7'},
-    {lbl:'Risk AUC · wk20',big:o20.risk_auc!=null?o20.risk_auc.toFixed(3):'—',sub:'overall, ranking',c:'#3ec98e'},
-    {lbl:'Coursework cov80 · wk20',big:o20.grade_cov80!=null?Math.round(o20.grade_cov80*100)+'%':'—',sub:'interval honesty',c:'#a78bfa'},
-    {lbl:'Withdrawal cov',big:cn?Math.round(cs/cn*100)+'%':'—',sub:'event-time, calibrated',c:'#e6a235'},
+    {lbl:'Test students',big:DATA.test_trajectories.length,sub:'full trajectories',c:'#2c5f8a'},
+    {lbl:'Risk AUC · wk20',big:o20.risk_auc!=null?o20.risk_auc.toFixed(3):'—',sub:'overall, ranking',c:'#3f8f63'},
+    {lbl:'Coursework cov80 · wk20',big:o20.grade_cov80!=null?Math.round(o20.grade_cov80*100)+'%':'—',sub:'interval honesty',c:'#6d5aa8'},
+    {lbl:'Withdrawal cov',big:cn?Math.round(cs/cn*100)+'%':'—',sub:'event-time, calibrated',c:'#bf842b'},
   ].map(k=>`<div class="sc" style="--c:${k.c}"><div class="lbl">${k.lbl}</div><div class="big">${k.big}</div><div class="sub">${k.sub}</div></div>`).join('');
   // filters
   const mods=[...new Set(DATA.test_trajectories.map(t=>t.code_module))].sort();
@@ -129,14 +130,14 @@ function init(){
   // coverage table
   const wr=(DATA.coverage&&DATA.coverage.withdrawn_raw)||{};
   document.getElementById('covtbody').innerHTML=Object.keys(wc).sort().map(mod=>{
-    const c=wc[mod].coverage,col=c==null?'#6b7080':c>=0.78?'#3ec98e':'#e05555';
+    const c=wc[mod].coverage,col=c==null?'#6b7080':c>=0.78?'#3f8f63':'#c0504d';
     const adj=(DATA.meta.q_adj_weeks_per_module||{})[mod];
     return `<tr><td>${mod}</td><td>${wc[mod].n}</td><td>${wr[mod]&&wr[mod].coverage!=null?Math.round(wr[mod].coverage*100)+'%':'—'}</td>
       <td style="color:${col}">${c!=null?Math.round(c*100)+'%':'—'}</td><td>+${adj??0}</td></tr>`;}).join('');
   buildChart();repopulate();
 }
 function buildChart(){
-  const tk={color:'#6b7080',font:{size:10,family:"'DM Mono',monospace"}},gc='rgba(255,255,255,0.04)';
+  const tk={color:'#6b7080',font:{size:10,family:"'DM Mono',monospace"}},gc='rgba(0,0,0,.06)';
   chart=new Chart(document.getElementById('chart'),{type:'line',data:{labels:[],datasets:[]},
     options:{responsive:true,maintainAspectRatio:false,animation:false,
       interaction:{mode:'index',intersect:false},
@@ -145,8 +146,8 @@ function buildChart(){
           const v=c.raw;return c.dataset.yAxisID==='yRisk'?`${c.dataset.label}: ${Math.round(v*100)}%`:`${c.dataset.label}: ${v}`;}}}},
       scales:{
         x:{ticks:{...tk,maxTicksLimit:13},grid:{color:gc},title:{display:true,text:'course week',color:'#6b7080',font:{size:10}}},
-        yRisk:{position:'left',min:0,max:1,ticks:{...tk,callback:v=>Math.round(v*100)+'%'},grid:{color:gc},title:{display:true,text:'risk',color:'#4f8ef7',font:{size:10}}},
-        yGrade:{position:'right',min:0,max:100,ticks:tk,grid:{drawOnChartArea:false},title:{display:true,text:'coursework',color:'#3ec98e',font:{size:10}}}}}});
+        yRisk:{position:'left',min:0,max:1,ticks:{...tk,callback:v=>Math.round(v*100)+'%'},grid:{color:gc},title:{display:true,text:'risk',color:'#2c5f8a',font:{size:10}}},
+        yGrade:{position:'right',min:0,max:100,ticks:tk,grid:{drawOnChartArea:false},title:{display:true,text:'coursework',color:'#3f8f63',font:{size:10}}}}}});
 }
 function repopulate(){
   const fm=document.getElementById('fMod').value,fo=document.getElementById('fOut').value;
@@ -167,26 +168,26 @@ function render(){
   const ds=[];
   // risk cone (yRisk)
   let lo=ds.length; ds.push({data:t.risk_lo,label:'_rlo',yAxisID:'yRisk',borderColor:'transparent',borderWidth:0,pointRadius:0,fill:false,tension:0.3});
-  ds.push({data:t.risk_hi,label:'_rhi',yAxisID:'yRisk',borderColor:'transparent',borderWidth:0,pointRadius:0,backgroundColor:ha('#4f8ef7',.18),fill:lo,tension:0.3});
-  ds.push({data:t.risk_med,label:'combined risk',yAxisID:'yRisk',borderColor:'#4f8ef7',borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
+  ds.push({data:t.risk_hi,label:'_rhi',yAxisID:'yRisk',borderColor:'transparent',borderWidth:0,pointRadius:0,backgroundColor:ha('#2c5f8a',.18),fill:lo,tension:0.3});
+  ds.push({data:t.risk_med,label:'combined risk',yAxisID:'yRisk',borderColor:'#2c5f8a',borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
   // decomposed components (withdrawal vs academic/exam) — thin dashed
-  if(t.risk_wd_med)ds.push({data:t.risk_wd_med,label:'withdrawal risk',yAxisID:'yRisk',borderColor:ha('#e05555',.75),borderWidth:1.3,borderDash:[5,3],pointRadius:0,fill:false,tension:0.3});
-  if(t.risk_ac_med)ds.push({data:t.risk_ac_med,label:'academic risk',yAxisID:'yRisk',borderColor:ha('#a78bfa',.85),borderWidth:1.3,borderDash:[2,2],pointRadius:0,fill:false,tension:0.3});
+  if(t.risk_wd_med)ds.push({data:t.risk_wd_med,label:'withdrawal risk',yAxisID:'yRisk',borderColor:ha('#c0504d',.75),borderWidth:1.3,borderDash:[5,3],pointRadius:0,fill:false,tension:0.3});
+  if(t.risk_ac_med)ds.push({data:t.risk_ac_med,label:'academic risk',yAxisID:'yRisk',borderColor:ha('#6d5aa8',.85),borderWidth:1.3,borderDash:[2,2],pointRadius:0,fill:false,tension:0.3});
   // grade cone (yGrade)
   lo=ds.length; ds.push({data:t.grade_lo,label:'_glo',yAxisID:'yGrade',borderColor:'transparent',borderWidth:0,pointRadius:0,fill:false,tension:0.3});
-  ds.push({data:t.grade_hi,label:'_ghi',yAxisID:'yGrade',borderColor:'transparent',borderWidth:0,pointRadius:0,backgroundColor:ha('#3ec98e',.16),fill:lo,tension:0.3});
-  ds.push({data:t.grade_med,label:'median grade',yAxisID:'yGrade',borderColor:'#3ec98e',borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
+  ds.push({data:t.grade_hi,label:'_ghi',yAxisID:'yGrade',borderColor:'transparent',borderWidth:0,pointRadius:0,backgroundColor:ha('#3f8f63',.16),fill:lo,tension:0.3});
+  ds.push({data:t.grade_med,label:'median grade',yAxisID:'yGrade',borderColor:'#3f8f63',borderWidth:2.5,pointRadius:0,fill:false,tension:0.3});
   // alert threshold (risk axis)
-  ds.push({data:thrLine,label:'_thr',yAxisID:'yRisk',borderColor:ha('#e6a235',.55),borderWidth:1,borderDash:[6,4],pointRadius:0,fill:false,tension:0});
+  ds.push({data:thrLine,label:'_thr',yAxisID:'yRisk',borderColor:ha('#bf842b',.55),borderWidth:1,borderDash:[6,4],pointRadius:0,fill:false,tension:0});
   // markers
-  if(t.te_med<=W[n-1])ds.push({data:spike(t.te_med),label:'_temed',yAxisID:'yRisk',borderColor:'#e6a235',borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false});
-  if(t.event_flag)ds.push({data:spike(t.event_week),label:'_actual',yAxisID:'yRisk',borderColor:'#e05555',borderWidth:2,pointRadius:0,fill:false});
+  if(t.te_med<=W[n-1])ds.push({data:spike(t.te_med),label:'_temed',yAxisID:'yRisk',borderColor:'#bf842b',borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false});
+  if(t.event_flag)ds.push({data:spike(t.event_week),label:'_actual',yAxisID:'yRisk',borderColor:'#c0504d',borderWidth:2,pointRadius:0,fill:false});
   chart.data.labels=W;chart.data.datasets=ds;chart.update('none');
   // info
   const fa=firstAlert(t);
   const cov=t.event_flag?(t.te_lo_cal<=t.event_week&&t.event_week<=t.te_hi_cal):null;
-  const yn=b=>b==null?'—':(b?'<span style="color:#3ec98e">yes</span>':'<span style="color:#e05555">no</span>');
-  const rc=t.true_result==='Pass'||t.true_result==='Distinction'?'#3ec98e':'#e05555';
+  const yn=b=>b==null?'—':(b?'<span style="color:#3f8f63">yes</span>':'<span style="color:#c0504d">no</span>');
+  const rc=t.true_result==='Pass'||t.true_result==='Distinction'?'#3f8f63':'#c0504d';
   document.getElementById('info').innerHTML=`
     <div class="kv"><span class="k">module</span><span class="v">${t.code_module}</span></div>
     <div class="kv"><span class="k">true result</span><span class="v"><span class="badge" style="background:${ha(rc,.15)};color:${rc}">${t.true_result}</span></span></div>
@@ -194,7 +195,7 @@ function render(){
     <div class="kv"><span class="k">final risk (combined)</span><span class="v">${Math.round(t.risk_med[n-1]*100)}% [${Math.round(t.risk_lo[n-1]*100)}–${Math.round(t.risk_hi[n-1]*100)}]</span></div>
     ${t.risk_wd_med?`<div class="kv"><span class="k">&nbsp;&nbsp;↳ withdrawal / academic</span><span class="v">${Math.round(t.risk_wd_med[n-1]*100)}% / ${Math.round(t.risk_ac_med[n-1]*100)}%</span></div>`:''}
     <div class="kv"><span class="k">final coursework (median)</span><span class="v">${t.grade_med[n-1]} [${t.grade_lo[n-1]}–${t.grade_hi[n-1]}]</span></div>
-    <div class="kv"><span class="k">alert</span><span class="v">${fa?`<span style="color:#e05555">flagged wk ${fa}</span>`:'<span style="color:#3ec98e">never</span>'}</span></div>
+    <div class="kv"><span class="k">alert</span><span class="v">${fa?`<span style="color:#c0504d">flagged wk ${fa}</span>`:'<span style="color:#3f8f63">never</span>'}</span></div>
     <div class="kv"><span class="k">predicted withdrawal wk</span><span class="v">${t.te_med}</span></div>
     <div class="kv"><span class="k">event-time 80% (calib)</span><span class="v">wk ${t.te_lo_cal}–${t.te_hi_cal}</span></div>
     <div class="kv"><span class="k">actual event wk</span><span class="v">${t.event_flag?t.event_week:'— (no event)'}</span></div>

@@ -33,8 +33,9 @@ try: sys.stdout.reconfigure(encoding="utf-8")
 except (AttributeError, ValueError): pass
 
 DATA_DIR = r"C:\Users\quock\Documents\Projects\data\OULAD"
-CACHE    = "_features_global.pkl"
 K        = int(os.environ.get("K", 20))
+SAMPLE_FRAC = float(os.environ.get("SAMPLE_FRAC", 1.0))   # <1 → quick sampled run
+CACHE    = "_features_global.pkl" if SAMPLE_FRAC >= 1.0 else f"_features_s{SAMPLE_FRAC}.pkl"
 STRATIFY = os.environ.get("STRATIFY", "0") == "1"
 QUANTS   = [0.1, 0.5, 0.9]
 TARGET_RECALL   = 0.80          # alert-threshold recall floor (per module)
@@ -55,8 +56,8 @@ if os.path.exists(CACHE):
     print("\n[1/8] Loading cached features...")
     FULL, static = pickle.load(open(CACHE, "rb"))
 else:
-    print("\n[1/8] Building global features (all 22 cohorts)...")
-    eng = HybridFeatureEngineerGlobal(DATA_DIR).build()
+    print(f"\n[1/8] Building global features (all 22 cohorts, sample_frac={SAMPLE_FRAC})...")
+    eng = HybridFeatureEngineerGlobal(DATA_DIR, sample_frac=SAMPLE_FRAC).build()
     static = eng.static
     FULL = eng.weekly.join(static[STATIC_COLS + GROUP_COLS], on="reg_id")[eng.feat_cols].sort_index()
     pickle.dump((FULL, static), open(CACHE, "wb"))

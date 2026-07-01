@@ -28,10 +28,11 @@ GROUP_COLS = ["module_ord", "pres_year", "pres_term_oct", "course_weeks"]
 
 
 class HybridFeatureEngineerGlobal:
-    def __init__(self, data_dir, modules=None, presentations=None):
+    def __init__(self, data_dir, modules=None, presentations=None, sample_frac=1.0):
         self.data_dir = data_dir
         self.modules = modules                 # None → all
         self.presentations = presentations
+        self.sample_frac = sample_frac         # <1 → downsample students per cohort (quick runs)
         self.feat_cols = STATIC_COLS + GROUP_COLS + TIMEVAR_COLS
 
     # ── load once ────────────────────────────────────────────────────────────
@@ -59,6 +60,8 @@ class HybridFeatureEngineerGlobal:
                              (self.info_all.code_presentation == pres)].copy()
         if len(info) == 0:
             return None, None
+        if self.sample_frac < 1.0 and len(info) > 30:
+            info = info.sample(frac=self.sample_frac, random_state=42)
         sids = info["id_student"].tolist()
         sidx = {s: i for i, s in enumerate(sids)}
         n = len(sids)

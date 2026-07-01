@@ -5,29 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GradeCast — Leadership view</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--border:rgba(255,255,255,0.08);
-  --text:#e8eaf0;--muted:#7a8090;--accent:#4f8ef7;--red:#e05555;--amber:#e6a235;--green:#3ec98e;--purple:#a78bfa;
-  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+:root{--bg:#f4f6f9;--bg2:#ffffff;--bg3:#eef1f5;--border:#e2e7ee;
+  --text:#222a35;--muted:#66717f;--accent:#2c5f8a;--red:#c0504d;--amber:#bf842b;--green:#3f8f63;--purple:#6d5aa8;
+  --font:'DM Sans',sans-serif;--serif:'Source Serif 4',Georgia,serif;--mono:'DM Mono',monospace;
+  --shadow:0 1px 2px rgba(28,40,64,.05),0 3px 12px rgba(28,40,64,.05);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;}
-header{display:flex;align-items:center;justify-content:space-between;padding:15px 26px;border-bottom:1px solid var(--border);background:var(--bg2);}
-.brand{font-weight:600;font-size:16px;}.brand span{color:var(--muted);font-weight:400;font-size:13px;}
-.rolelinks a{color:var(--muted);text-decoration:none;font-size:12px;font-family:var(--mono);margin-left:14px;}
+header{display:flex;align-items:center;justify-content:space-between;padding:15px 26px;border-bottom:1px solid var(--border);background:var(--bg2);box-shadow:0 1px 3px rgba(28,40,64,.04);}
+.brand{font-family:var(--serif);font-weight:600;font-size:18px;}.brand span{color:var(--muted);font-weight:400;font-size:13px;font-family:var(--font);}
+.rolelinks a{color:var(--muted);text-decoration:none;font-size:12.5px;font-weight:500;margin-left:15px;}
 .rolelinks a:hover{color:var(--text);}
-.main{max-width:1200px;margin:0 auto;padding:20px 26px;}
+.main{max-width:1200px;margin:0 auto;padding:22px 26px;}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px;margin-bottom:14px;}
-.kpi{background:linear-gradient(160deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:17px 19px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
 .kpi::after{content:'';position:absolute;left:0;top:0;right:0;height:3px;background:var(--c,var(--accent));}
-.kpi .big{font-size:32px;font-weight:700;line-height:1;}
+.kpi .big{font-family:var(--serif);font-size:33px;font-weight:700;line-height:1;}
 .kpi .lbl{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.4;}
-.trust{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.2);border-radius:12px;padding:14px 18px;margin-bottom:18px;font-size:14px;line-height:1.7;color:#cdd6e8;}
-.trust b{color:#fff;}
+.trust{background:rgba(44,95,138,.06);border:1px solid rgba(44,95,138,.2);border-radius:12px;padding:15px 19px;margin-bottom:18px;font-size:14px;line-height:1.7;color:#33414f;}
+.trust b{color:#16202c;font-weight:600;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 @media(max-width:880px){.grid2{grid-template-columns:1fr;}}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
-.card h3{font-size:14px;font-weight:600;margin-bottom:4px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:17px 19px;box-shadow:var(--shadow);}
+.card h3{font-family:var(--serif);font-size:16px;font-weight:600;margin-bottom:4px;}
 .card .sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
 .bar{display:flex;align-items:center;gap:10px;margin:9px 0;}
 .bar .nm{width:46px;font-family:var(--mono);font-size:12px;}
@@ -42,8 +43,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:15p
 .modrow .lbl{width:46px;font-family:var(--mono);font-size:10px;color:var(--muted);}
 .modrow .track{flex:1;height:17px;background:var(--bg3);border-radius:5px;overflow:hidden;}
 .modrow .ctrack{flex:1;height:9px;background:var(--bg3);border-radius:4px;position:relative;overflow:hidden;}
-.modrow .ctrack .cf{height:100%;background:#3ec98e;border-radius:4px;}
-.modrow .ctrack .cm{position:absolute;top:0;height:100%;width:2px;background:#dff5ec;}
+.modrow .ctrack .cf{height:100%;background:#3f8f63;border-radius:4px;}
+.modrow .ctrack .cm{position:absolute;top:0;height:100%;width:2px;background:#1c5e3c;}
 .modrow .fill{height:100%;border-radius:5px;}
 .modrow .val{width:64px;text-align:right;font-family:var(--mono);font-size:12px;}
 .modrow .sub2{width:140px;text-align:right;font-family:var(--mono);font-size:11px;color:var(--muted);}
@@ -77,12 +78,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:15p
   </div>
 </div>
 <script>
-const MODC={AAA:'#4f8ef7',BBB:'#3ec98e',CCC:'#e6a235',DDD:'#e05555',EEE:'#a78bfa',FFF:'#e84393',GGG:'#1abc9c'};
+const MODC={AAA:'#2c5f8a',BBB:'#3f8f63',CCC:'#bf842b',DDD:'#c0504d',EEE:'#6d5aa8',FFF:'#b5477f',GGG:'#2a9d8f'};
 let L=null;
 fetch('web/leadership.json').then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>{L=j;init();})
   .catch(()=>{document.getElementById('msg').innerHTML='Cannot load web/leadership.json — run <code>python global_pipeline.py</code> first.';});
 const pct=x=>x==null?'—':Math.round(x*100)+'%';
-const riskColor=r=>r>=0.55?'#e05555':r>=0.4?'#e6a235':'#3ec98e';
+const riskColor=r=>r>=0.55?'#c0504d':r>=0.4?'#bf842b':'#3f8f63';
 
 function init(){
   document.getElementById('msg').style.display='none';
@@ -90,10 +91,10 @@ function init(){
   const o=L.overall;
   const reachable=Math.round(o.n_regs*o.at_risk_rate*(o.recall_wk20||0));
   document.getElementById('kpis').innerHTML=[
-    {b:o.n_students.toLocaleString(),l:'students across all programmes',c:'#4f8ef7'},
-    {b:pct(o.at_risk_rate),l:'fail or withdraw (historical)',c:'#e05555'},
-    {b:pct(o.recall_wk20),l:'of at-risk students caught by mid-term',c:'#3ec98e'},
-    {b:reachable.toLocaleString(),l:'students reachable early with support',c:'#e6a235'},
+    {b:o.n_students.toLocaleString(),l:'students across all programmes',c:'#2c5f8a'},
+    {b:pct(o.at_risk_rate),l:'fail or withdraw (historical)',c:'#c0504d'},
+    {b:pct(o.recall_wk20),l:'of at-risk students caught by mid-term',c:'#3f8f63'},
+    {b:reachable.toLocaleString(),l:'students reachable early with support',c:'#bf842b'},
   ].map(k=>`<div class="kpi" style="--c:${k.c}"><div class="big">${k.b}</div><div class="lbl">${k.l}</div></div>`).join('');
   // trust statement
   document.getElementById('trust').innerHTML=
@@ -106,7 +107,7 @@ function buildModHealth(){
   document.getElementById('modhealth').innerHTML=mods.map(([m,v])=>{
     const wd=v.withdraw_rate||0,fl=v.fail_rate||0;
     const arBar=split
-      ?`<div class="track" style="display:flex"><div style="width:${Math.round(wd*100)}%;background:#e6a235"></div><div style="width:${Math.round(fl*100)}%;background:#e05555"></div></div>`
+      ?`<div class="track" style="display:flex"><div style="width:${Math.round(wd*100)}%;background:#bf842b"></div><div style="width:${Math.round(fl*100)}%;background:#c0504d"></div></div>`
       :`<div class="track"><div class="fill" style="width:${Math.round(v.at_risk_rate*100)}%;background:${riskColor(v.at_risk_rate)}"></div></div>`;
     // how early risk is caught: green bar = recall by week 10 (early); tick = recall by mid-term
     const r10=v.recall_wk10||0,r20=v.recall_wk20||0;
@@ -115,10 +116,10 @@ function buildModHealth(){
         <div class="cm" style="left:${Math.round(r20*100)}%"></div></div>`;
     return `<div class="modrow">
       <div class="top"><div class="nm">${m}</div>${arBar}<div class="val">${pct(v.at_risk_rate)}</div><div class="sub2">${split?`${pct(wd)} drop · ${pct(fl)} fail`:''}</div></div>
-      <div class="ctch"><div class="lbl">caught</div>${catchBar}<div class="val" style="color:#3ec98e">${pct(r10)}</div><div class="sub2">wk10 ${pct(r10)} · wk20 ${pct(r20)}</div></div>
+      <div class="ctch"><div class="lbl">caught</div>${catchBar}<div class="val" style="color:#3f8f63">${pct(r10)}</div><div class="sub2">wk10 ${pct(r10)} · wk20 ${pct(r20)}</div></div>
     </div>`;
   }).join('')
-    + `<div class="note"><b>Top bar</b> = total at-risk rate${split?' (<span style="color:#e6a235">■</span> dropout, <span style="color:#e05555">■</span> academic fail — the mix says retention vs. teaching/exam support)':''}. <b>Lower bar</b> = how early at-risk students are flagged: <span style="color:#3ec98e">■</span> share caught by <b>week&nbsp;10</b>, tick = level by <b>mid-term (wk&nbsp;20)</b>. A longer green bar = risk caught sooner.</div>`;
+    + `<div class="note"><b>Top bar</b> = total at-risk rate${split?' (<span style="color:#bf842b">■</span> dropout, <span style="color:#c0504d">■</span> academic fail — the mix says retention vs. teaching/exam support)':''}. <b>Lower bar</b> = how early at-risk students are flagged: <span style="color:#3f8f63">■</span> share caught by <b>week&nbsp;10</b>, tick = level by <b>mid-term (wk&nbsp;20)</b>. A longer green bar = risk caught sooner.</div>`;
 }
 function buildTrend(){
   const order=['2013B','2013J','2014B','2014J'];
@@ -127,13 +128,13 @@ function buildTrend(){
     return {label:m,data:order.map(p=>map[p]!=null?map[p]:null),borderColor:MODC[m]||'#888',backgroundColor:MODC[m]||'#888',
       borderWidth:2,pointRadius:3,fill:false,tension:0.25,spanGaps:true};
   });
-  const tk={color:'#7a8090',font:{size:11,family:"'DM Mono',monospace"}};
+  const tk={color:'#66717f',font:{size:11,family:"'DM Mono',monospace"}};
   new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:order,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{color:'#7a8090',font:{size:10,family:"'DM Mono',monospace"},boxWidth:10}},
+      plugins:{legend:{position:'bottom',labels:{color:'#66717f',font:{size:10,family:"'DM Mono',monospace"},boxWidth:10}},
         tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw==null?'—':Math.round(c.raw*100)+'%'}`}}},
-      scales:{x:{ticks:tk,grid:{color:'rgba(255,255,255,.04)'}},
-        y:{min:0,max:1,ticks:{...tk,callback:v=>Math.round(v*100)+'%'},grid:{color:'rgba(255,255,255,.04)'},title:{display:true,text:'at-risk rate',color:'#7a8090',font:{size:10}}}}}});
+      scales:{x:{ticks:tk,grid:{color:'rgba(0,0,0,.06)'}},
+        y:{min:0,max:1,ticks:{...tk,callback:v=>Math.round(v*100)+'%'},grid:{color:'rgba(0,0,0,.06)'},title:{display:true,text:'at-risk rate',color:'#66717f',font:{size:10}}}}}});
 }
 function buildEquity(){
   const dims=[['imd','Deprivation band (IMD)'],['age','Age band'],['gender','Gender'],['disability','Disability']];

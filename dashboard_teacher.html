@@ -5,17 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GradeCast — Teacher view</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d0f14;--bg2:#13161e;--bg3:#1a1e2a;--border:rgba(255,255,255,0.08);
-  --text:#e8eaf0;--muted:#7a8090;--accent:#4f8ef7;--red:#e05555;--amber:#e6a235;--green:#3ec98e;
-  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+:root{--bg:#f4f6f9;--bg2:#ffffff;--bg3:#eef1f5;--border:#e2e7ee;
+  --text:#222a35;--muted:#66717f;--accent:#2c5f8a;--red:#c0504d;--amber:#bf842b;--green:#3f8f63;
+  --font:'DM Sans',sans-serif;--serif:'Source Serif 4',Georgia,serif;--mono:'DM Mono',monospace;
+  --shadow:0 1px 2px rgba(28,40,64,.05),0 3px 12px rgba(28,40,64,.05);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;}
-header{display:flex;align-items:center;justify-content:space-between;padding:15px 26px;border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap;gap:10px;}
-.brand{font-weight:600;font-size:16px;}
-.brand span{color:var(--muted);font-weight:400;font-size:13px;}
-.rolelinks a{color:var(--muted);text-decoration:none;font-size:12px;font-family:var(--mono);margin-left:14px;}
+header{display:flex;align-items:center;justify-content:space-between;padding:15px 26px;border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap;gap:10px;box-shadow:0 1px 3px rgba(28,40,64,.04);}
+.brand{font-family:var(--serif);font-weight:600;font-size:18px;}
+.brand span{color:var(--muted);font-weight:400;font-size:13px;font-family:var(--font);}
+.rolelinks a{color:var(--muted);text-decoration:none;font-size:12.5px;font-weight:500;margin-left:15px;}
 .rolelinks a:hover{color:var(--text);}
 .main{max-width:1280px;margin:0 auto;padding:18px 26px;}
 .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px;}
@@ -25,29 +26,31 @@ select,input[type=range]{background:transparent;border:none;color:var(--text);fo
 input[type=range]{width:150px;accent-color:var(--accent);}
 .wknum{font-family:var(--mono);font-weight:600;color:var(--accent);min-width:54px;}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px;}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:15px 17px;}
-.kpi .big{font-size:30px;font-weight:700;line-height:1;}
-.kpi .lbl{font-size:12px;color:var(--muted);margin-top:7px;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:15px 17px;box-shadow:var(--shadow);}
+.kpi .big{font-family:var(--serif);font-size:31px;font-weight:700;line-height:1;}
+.kpi .lbl{font-size:12px;color:var(--muted);margin-top:7px;line-height:1.35;}
 .kpi.red .big{color:var(--red);} .kpi.amber .big{color:var(--amber);}
-.layout{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;}
-@media(max-width:900px){.layout{grid-template-columns:1fr;}}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:4px;}
-.card .hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px;}
-.card .hd h3{font-size:14px;font-weight:600;}
+.layout{display:grid;grid-template-columns:1fr 1.5fr;gap:16px;align-items:start;}
+@media(max-width:980px){.layout{grid-template-columns:1fr;}}
+tr.gone td{opacity:.5;}
+.dropbadge{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--muted);}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:4px;box-shadow:var(--shadow);}
+.card .hd{display:flex;justify-content:space-between;align-items:center;padding:13px 15px 9px;}
+.card .hd h3{font-family:var(--serif);font-size:16px;font-weight:600;}
 .filterpills{display:flex;gap:5px;}
 .fp{font-size:11px;font-family:var(--mono);padding:3px 11px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;}
-.fp.on{color:#fff;border-color:transparent;font-weight:600;}
+.fp.on{color:#fff;background:var(--accent);border-color:transparent;font-weight:600;}
 .tablewrap{max-height:560px;overflow-y:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 th{position:sticky;top:0;text-align:left;padding:9px 12px;font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:var(--bg3);border-bottom:1px solid var(--border);}
 td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr{cursor:pointer;}
-tr:hover td{background:rgba(255,255,255,0.02);}
-tr.sel td{background:rgba(79,142,247,0.08);}
+tr:hover td{background:rgba(28,40,64,0.025);}
+tr.sel td{background:rgba(44,95,138,0.07);}
 .dot{display:inline-flex;align-items:center;gap:7px;font-weight:600;}
 .dot i{width:9px;height:9px;border-radius:50%;display:inline-block;}
 .chip{display:inline-block;font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);color:var(--muted);margin:1px 3px 1px 0;}
-.chip.warn{color:#f0b86e;border-color:rgba(230,162,53,.3);background:rgba(230,162,53,.08);}
+.chip.warn{color:#8a5a12;border-color:rgba(191,132,43,.35);background:rgba(191,132,43,.10);}
 .muted{color:var(--muted);}
 .detail{padding:16px 18px;}
 .detail .name{font-size:18px;font-weight:600;margin-bottom:3px;}
@@ -56,24 +59,24 @@ tr.sel td{background:rgba(79,142,247,0.08);}
 .strip .c{flex:1;height:26px;border-radius:3px;position:relative;}
 .strip .c.now{outline:2px solid #fff;outline-offset:1px;}
 .striplabels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:var(--mono);}
-.fcwrap{position:relative;height:210px;margin:4px 0 2px;}
+.fcwrap{position:relative;height:380px;margin:4px 0 6px;}
 .chartleg{display:flex;gap:14px;align-items:center;font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:6px;}
 .chartleg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px;}
 .risksplit{display:flex;gap:10px;margin:10px 0 2px;}
 .rs{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:9px 12px;}
 .rs .rsk{font-size:11px;color:var(--muted);font-family:var(--mono);display:block;margin-bottom:3px;}
 .rs .rsv{font-size:20px;font-weight:700;}
-.rs.lead{border-color:rgba(224,85,85,.35);background:rgba(224,85,85,.07);}
-.exdep{display:block;margin-top:4px;font-size:10px;font-family:var(--mono);color:#e6a235;}
+.rs.lead{border-color:rgba(192,80,77,.4);background:rgba(192,80,77,.08);}
+.exdep{display:block;margin-top:4px;font-size:10px;font-family:var(--mono);color:#8a5a12;}
 .kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
 .kv:last-child{border-bottom:none;}
 .kv .k{color:var(--muted);}
-.action{background:rgba(79,142,247,.08);border:1px solid rgba(79,142,247,.22);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:14px;}
-.action b{color:#9ab5e8;}
+.action{background:rgba(44,95,138,.06);border:1px solid rgba(44,95,138,.2);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:14px;}
+.action b{color:var(--accent);}
 .insample{font-size:10px;font-family:var(--mono);color:var(--muted);border:1px solid var(--border);border-radius:5px;padding:1px 6px;}
 #msg{padding:60px;text-align:center;color:var(--muted);font-family:var(--mono);}
 .sectlabel{font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px;}
-.ctrl.btn{cursor:pointer;user-select:none;}.ctrl.btn:hover{border-color:rgba(255,255,255,.2);}
+.ctrl.btn{cursor:pointer;user-select:none;}.ctrl.btn:hover{border-color:rgba(0,0,0,.18);}
 .scheme{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-bottom:16px;}
 .scheme h4{font-size:13px;font-weight:600;margin-bottom:3px;}
 .scheme .sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:12px;}
@@ -86,11 +89,11 @@ tr.sel td{background:rgba(79,142,247,0.08);}
 .seg{display:inline-flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;}
 .seg span{padding:5px 11px;font-size:12px;font-family:var(--mono);cursor:pointer;color:var(--muted);}
 .seg span.on{background:var(--accent);color:#fff;}
-.refit{margin-left:auto;background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.3);color:#9ab5e8;border-radius:8px;padding:7px 13px;font-size:12px;font-family:var(--mono);cursor:pointer;}
-.refit:hover{background:rgba(79,142,247,.2);}
-.outlook{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.2);border-radius:9px;padding:10px 13px;margin:10px 0 2px;font-size:13px;line-height:1.5;}
-.outlook.bad{background:rgba(224,85,85,.08);border-color:rgba(224,85,85,.3);}
-.outlook.good{background:rgba(62,201,142,.08);border-color:rgba(62,201,142,.28);}
+.refit{margin-left:auto;background:rgba(44,95,138,.1);border:1px solid rgba(44,95,138,.28);color:var(--accent);border-radius:8px;padding:7px 13px;font-size:12px;font-family:var(--mono);cursor:pointer;}
+.refit:hover{background:rgba(44,95,138,.16);}
+.outlook{background:rgba(44,95,138,.06);border:1px solid rgba(44,95,138,.18);border-radius:9px;padding:10px 13px;margin:10px 0 2px;font-size:13px;line-height:1.5;}
+.outlook.bad{background:rgba(192,80,77,.08);border-color:rgba(192,80,77,.3);}
+.outlook.good{background:rgba(63,143,99,.09);border-color:rgba(63,143,99,.28);}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 16px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;max-width:520px;}
 #toast.show{opacity:1;}
 </style>
@@ -145,7 +148,7 @@ tr.sel td{background:rgba(79,142,247,0.08);}
   </div>
 </div>
 <script>
-const LVLC={High:'#e05555',Med:'#e6a235',Low:'#3ec98e'},LVLW={High:'High',Med:'Medium',Low:'Low'};
+const LVLC={High:'#c0504d',Med:'#bf842b',Low:'#3f8f63'},LVLW={High:'High',Med:'Medium',Low:'Low'};
 let LEAD=null,R=null,WK=10,FILTER='all',SELID=null,COHORTS={},CHART=null,FCAST=null;
 const LOWCW=40;                                  // very-low coursework cutoff (not a pass mark)
 const MISSED_WT=0.10;                            // flag once ≥10% of graded weight is unsubmitted
@@ -246,81 +249,94 @@ function action(rs){const r=(rs[0]||{}).t||'';
   if(r.toLowerCase().includes('coursework'))return'Offer tutoring / extra support';
   if(r.includes('Registered late'))return'Run an onboarding check-in';
   return'No action needed — keep encouraging';}
-function trend(s,i){const p=Math.max(0,i-3),d=s.risk[i]-s.risk[p];return d>0.04?{a:'↑',c:'#e05555'}:d<-0.04?{a:'↓',c:'#3ec98e'}:{a:'→',c:'#7a8090'};}
+function trend(s,i){const p=Math.max(0,i-3),d=s.risk[i]-s.risk[p];return d>0.04?{a:'↑',c:'#c0504d'}:d<-0.04?{a:'↓',c:'#3f8f63'}:{a:'→',c:'#66717f'};}
 function flaggedSince(s){for(let i=0;i<s.weeks.length;i++)if(s.risk[i]>=thrAt(s.weeks[i]))return s.weeks[i];return null;}
+function dropWk(s){return (s.result==='Withdrawn'&&s.event_flag)?s.event_week:null;}  // withdrawal week, else null
+function gone(s){const d=dropWk(s);return d!=null&&WK>=d;}   // has dropped out by the current week
 
 function setWeek(v){WK=parseInt(v);document.getElementById('wknum').textContent='wk '+WK;render();}
 function setFilter(f){FILTER=f;document.querySelectorAll('.fp').forEach(e=>e.classList.toggle('on',e.dataset.f===f));render();}
 
 function render(){
   const i=idx();
-  const rowsData=R.students.map(s=>({s,r:s.risk[i],lv:lvl(s.risk[i],s.weeks[i])}))
-    .sort((a,b)=>b.r-a.r);
-  // KPIs
-  const high=rowsData.filter(x=>x.lv==='High').length;
+  const rowsData=R.students.map(s=>({s,r:s.risk[i],lv:lvl(s.risk[i],s.weeks[i]),g:gone(s)}))
+    .sort((a,b)=>(a.g-b.g)||(b.r-a.r));   // dropped-out students sink to the bottom
+  // KPIs (dropped-out students are no longer "this week" — excluded from live counts)
+  const high=rowsData.filter(x=>!x.g&&x.lv==='High').length;
   let newly=0;
-  R.students.forEach(s=>{const f=s.risk[i]>=thrAt(s.weeks[i]);const pf=i>0&&s.risk[i-1]>=thrAt(s.weeks[i-1]);if(f&&!pf)newly++;});
+  R.students.forEach(s=>{if(gone(s))return;const f=s.risk[i]>=thrAt(s.weeks[i]);const pf=i>0&&s.risk[i-1]>=thrAt(s.weeks[i-1]);if(f&&!pf)newly++;});
   // retrospective: fail/dropout students never flagged by week 10 (early-warning gaps)
   const EARLYWK=10;
   const atRisk=R.students.filter(s=>s.result==='Fail'||s.result==='Withdrawn');
   const missedEarly=atRisk.filter(s=>{const fs=flaggedSince(s);return fs==null||fs>EARLYWK;}).length;
+  const liveAttention=rowsData.filter(x=>!x.g&&x.lv!=='Low').length;
   document.getElementById('kpis').innerHTML=[
     {b:R.students.length,l:'students in class'},
     {b:high,l:'high risk this week',c:'red'},
     {b:newly,l:'newly flagged this week',c:'amber'},
-    {b:rowsData.filter(x=>x.lv!=='Low').length,l:'need some attention'},
+    {b:liveAttention,l:'need some attention'},
     {b:missedEarly,l:`fail/dropout missed by wk${EARLYWK} (of ${atRisk.length})`,c:'amber'},
   ].map(k=>`<div class="kpi ${k.c||''}"><div class="big">${k.b}</div><div class="lbl">${k.l}</div></div>`).join('');
   // rows
   const flt=rowsData.filter(x=>FILTER==='all'||x.lv===FILTER);
-  document.getElementById('rows').innerHTML=flt.map(({s,lv})=>{
+  document.getElementById('rows').innerHTML=flt.map(({s,lv,g})=>{
+    if(g){const d=dropWk(s);return `<tr class="gone ${s.id===SELID?'sel':''}" onclick="select('${s.id}')">
+      <td><b>#${s.id}</b> <span class="insample">${s.in_sample}</span></td>
+      <td><span class="dropbadge"><i style="width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block"></i>Dropped out</span></td>
+      <td class="muted">—</td><td class="muted">—</td>
+      <td><span class="chip">left in week ${d}</span></td></tr>`;}
     const rs=reasons(s,i),tr=trend(s,i);
     const chips=rs.slice(0,2).map(c=>`<span class="chip ${c.w?'warn':''}">${c.t}</span>`).join('');
     return `<tr class="${s.id===SELID?'sel':''}" onclick="select('${s.id}')">
       <td><b>#${s.id}</b> <span class="insample">${s.in_sample}</span></td>
       <td><span class="dot" style="color:${LVLC[lv]}"><i style="background:${LVLC[lv]}"></i>${LVLW[lv]}</span></td>
       <td style="color:${tr.c};font-size:16px">${tr.a}</td>
-      <td>${!gradeOK()?'<span class="muted">—</span>':(s.grade_med[i]<LOWCW?'<span style="color:#e6a235">':'')+cwRange(s,i)+(s.grade_med[i]<LOWCW?'</span>':'')}</td>
+      <td>${!gradeOK()?'<span class="muted">—</span>':(s.grade_med[i]<LOWCW?'<span style="color:#bf842b">':'')+cwRange(s,i)+(s.grade_med[i]<LOWCW?'</span>':'')}</td>
       <td>${chips}</td></tr>`;}).join('') || '<tr><td colspan="5" class="muted" style="padding:20px">No students at this level.</td></tr>';
   if(SELID)renderDetail();
 }
 function select(id){SELID=id;render();}
 function renderDetail(){
   const s=R.students.find(x=>x.id===SELID);if(!s)return;
-  const i=idx(),lv=lvl(s.risk[i],s.weeks[i]),rs=reasons(s,i),fs=flaggedSince(s);
+  const g=gone(s),dw=dropWk(s);
+  const i=idx(),si=g?Math.max(0,(s.weeks.indexOf(dw)>=0?s.weeks.indexOf(dw):dw-1)):idx();   // snapshot index (drop week if gone)
+  const lv=lvl(s.risk[si],s.weeks[si]),rs=reasons(s,si),fs=flaggedSince(s);
   const reasonText=rs.filter(r=>r.t!=='On track').map(r=>r.t.toLowerCase()).join(', ');
-  const cwPhrase=gradeOK()?`Predicted coursework likely <b>${s.grade_lo[i]}–${s.grade_hi[i]}</b>`
+  const cwPhrase=gradeOK()?`Predicted coursework likely <b>${s.grade_lo[si]}–${s.grade_hi[si]}</b>`
                           :`This course is graded by final exam, so no coursework forecast is shown`;
-  const sentence = lv==='Low'
-    ? `Student #${s.id} looks <b style="color:${LVLC.Low}">on track</b>. ${cwPhrase}.`
-    : `Student #${s.id} is at <b style="color:${LVLC[lv]}">${LVLW[lv].toLowerCase()} risk</b>${fs?` (first flagged in week ${fs})`:''}${reasonText?`, driven by ${reasonText}`:''}. ${cwPhrase}.`;
-  const ceilRow=gradeOK()&&s.ceiling&&s.ceiling[i]<99
-    ?`<div class="kv"><span class="k">Max achievable coursework</span><span${s.ceiling[i]<LOWCW?' style="color:#e6a235"':''}>${s.ceiling[i]}${s.ceiling[i]<LOWCW?' · below pass mark':''}</span></div>`:'';
-  // dropout vs academic/exam risk split (drives different interventions)
-  const wd=s.risk_wd?s.risk_wd[i]:null, ac=s.risk_ac?s.risk_ac[i]:null;
+  const sentence = g
+    ? `Student #${s.id} <b style="color:var(--muted)">dropped out in week ${dw}</b>. The chart shows their risk up to that point.`
+    : lv==='Low'
+      ? `Student #${s.id} looks <b style="color:${LVLC.Low}">on track</b>. ${cwPhrase}.`
+      : `Student #${s.id} is at <b style="color:${LVLC[lv]}">${LVLW[lv].toLowerCase()} risk</b>${fs?` (first flagged in week ${fs})`:''}${reasonText?`, driven by ${reasonText}`:''}. ${cwPhrase}.`;
+  const ceilRow=gradeOK()&&s.ceiling&&s.ceiling[si]<99
+    ?`<div class="kv"><span class="k">Max achievable coursework</span><span${s.ceiling[si]<LOWCW?' style="color:#bf842b"':''}>${s.ceiling[si]}${s.ceiling[si]<LOWCW?' · below pass mark':''}</span></div>`:'';
+  const wd=s.risk_wd?s.risk_wd[si]:null, ac=s.risk_ac?s.risk_ac[si]:null;
   const examDep=ac!=null&&ac>=0.30&&ac<=0.70;     // calibrated risk near coin-flip → exam decides
-  const split=(wd!=null&&ac!=null)?`<div class="risksplit">
+  const split=g||!(wd!=null&&ac!=null)?'':`<div class="risksplit">
       <div class="rs${wd>=ac&&wd>=0.2?' lead':''}"><span class="rsk">Dropout risk</span><span class="rsv">${Math.round(wd*100)}%</span></div>
       <div class="rs${ac>wd&&ac>=0.2&&!examDep?' lead':''}"><span class="rsk">Academic / exam risk</span><span class="rsv">${Math.round(ac*100)}%</span>${examDep?'<span class="exdep">⚠ hinges on the exam — uncertain</span>':''}</div>
-    </div>`:'';
-  const outlook=passOutlook(s,i);
+    </div>`;
+  const o=passOutlook(s,si);
+  const outlookHtml=g?'':`<div class="outlook ${o.cls}">📋 ${o.txt}</div>`;
+  const actionHtml=g?'':`<div class="action">Suggested action: <b>${action(rs)}</b></div>`;
+  const signalsHtml=g?'':`<div class="sectlabel">Signals this week</div>${rs.map(r=>`<span class="chip ${r.w?'warn':''}">${r.t}</span>`).join('')}`;
   document.getElementById('detail').innerHTML=`
     <div class="name">Student #${s.id} <span class="insample">${s.in_sample}</span></div>
     <div class="muted" style="font-size:12px">${R.module} · ${R.presentation}${s.demo&&s.demo.age?' · age '+s.demo.age:''}</div>
     <div class="summary">${sentence}</div>
-    ${split}
-    <div class="outlook ${outlook.cls}">📋 ${outlook.txt}</div>
     <div class="sectlabel">Forecast — risk & coursework</div>
-    <div class="chartleg"><span><i style="background:#e05555"></i>risk of fail/withdraw</span>${gradeOK()?'<span><i style="background:#3ec98e"></i>coursework forecast</span><span><i style="background:#3ec98e;opacity:.55"></i>actual marks</span>':''}<span><i style="background:#e6a235"></i>alert bar</span><span>above the bar = needs attention · steady students drift below as the bar tightens · dashed = forecast</span></div>
+    <div class="chartleg"><span><i style="background:#c0504d"></i>risk of fail/withdraw</span>${gradeOK()?'<span><i style="background:#3f8f63"></i>coursework forecast</span><span><i style="background:#3f8f63;opacity:.55"></i>actual marks</span>':''}<span><i style="background:#bf842b"></i>alert bar</span><span>solid = known so far · shaded cone = forecast ahead (wider = less certain) · above the bar = needs attention</span></div>
     <div class="fcwrap"><canvas id="fcChart"></canvas></div>
-    <div class="action">Suggested action: <b>${action(rs)}</b></div>
-    <div class="sectlabel">Signals this week</div>
-    ${rs.map(r=>`<span class="chip ${r.w?'warn':''}">${r.t}</span>`).join('')}
+    ${split}
+    ${outlookHtml}
+    ${actionHtml}
+    ${signalsHtml}
     <div class="sectlabel">Snapshot</div>
-    <div class="kv"><span class="k">Predicted coursework</span><span>${gradeOK()?`${s.grade_lo[i]}–${s.grade_hi[i]} (≈${s.grade_med[i]})`:'n/a — exam-graded'}</span></div>
+    <div class="kv"><span class="k">Predicted coursework</span><span>${gradeOK()?`${s.grade_lo[si]}–${s.grade_hi[si]} (≈${s.grade_med[si]})`:'n/a — exam-graded'}</span></div>
     ${ceilRow}
-    <div class="kv"><span class="k">Weeks inactive</span><span>${s.inactive[i]}</span></div>
-    <div class="kv"><span class="k">Graded work missed</span><span>${s.missed_wt?Math.round(s.missed_wt[i]*100):0}% of marks${s.missed[i]?` (${s.missed[i]} task${s.missed[i]>1?'s':''})`:''}</span></div>
+    <div class="kv"><span class="k">Weeks inactive</span><span>${s.inactive[si]}</span></div>
+    <div class="kv"><span class="k">Graded work missed</span><span>${s.missed_wt?Math.round(s.missed_wt[si]*100):0}% of marks${s.missed[si]?` (${s.missed[si]} task${s.missed[si]>1?'s':''})`:''}</span></div>
     <div class="kv"><span class="k">Actual outcome (hindsight)</span><span>${s.result}${s.grade!=null?' · '+s.grade:''}</span></div>`;
   buildChart(s,i);
 }
@@ -362,9 +378,12 @@ function buildChart(s,i){
   if(CHART){CHART.destroy();CHART=null;}
   const ctx=document.getElementById('fcChart');if(!ctx||!window.Chart)return;
   const wk=s.weeks, n=wk.length;
+  // dropped-out students: clip the chart at their withdrawal week, no forecast beyond it
+  const dW=dropWk(s),goneNow=dW!=null&&wk[i]>=dW;
+  const ci=goneNow?Math.max(0,(wk.indexOf(dW)>=0?wk.indexOf(dW):dW-1)):i;
   const ha=(hex,a)=>{const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;};
-  // split each series at the current week: solid = known so far, dashed = current outlook held forward
-  const upto=arr=>arr.map((v,k)=>k<=i?v:null);                 // history incl. current week
+  // split each series at the current week (or drop week): solid = known so far, dashed = forecast
+  const upto=arr=>arr.map((v,k)=>k<=ci?v:null);                 // history incl. current/drop week
   const fore=val=>wk.map((_,k)=>k>=i?val:null);                // flat projection from now on
   const ds=[]; const band=(lo,hi,col)=>{const b=ds.length;
     ds.push({data:lo,yAxisID:col.ax,borderColor:'transparent',pointRadius:0,fill:false,spanGaps:false});
@@ -372,29 +391,32 @@ function buildChart(s,i){
   // risk is shown RELATIVE to the alert bar (alert level): >50 = flagged, and a steady student
   // drifts below 50 as the bar tightens. aL rescales a probability array per its week's threshold.
   const aL=arr=>arr.map((v,k)=>v==null?null:alvl(v,wk[k]));
-  band(upto(aL(s.risk_lo)),upto(aL(s.risk_hi)),{ax:'yR',bg:ha('#e05555',.14)});
-  ds.push({label:'Risk',data:upto(aL(s.risk)),yAxisID:'yR',borderColor:'#e05555',borderWidth:2.6,pointRadius:0,tension:.3,spanGaps:false});
-  // forward forecast: Monte-Carlo simulation of withdrawal risk (academic held at endpoint)
-  let foreMed,foreLo,foreHi;
-  if(s.risk_wd&&FCAST){const mc=mcRisk(s,i,n);foreMed=aL(mc.med);foreLo=aL(mc.lo);foreHi=aL(mc.hi);}
-  else{foreMed=aL(fore(s.risk[i]));foreLo=aL(fore(s.risk_lo[i]));foreHi=aL(fore(s.risk_hi[i]));}
-  band(foreLo,foreHi,{ax:'yR',bg:ha('#e05555',.16)});
-  ds.push({label:'Risk (projected)',data:foreMed,yAxisID:'yR',borderColor:'#e05555',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:.2,spanGaps:false});
+  // history = clean line (what's known); the shaded band is added only on the forecast below
+  ds.push({label:'Risk',data:upto(aL(s.risk)),yAxisID:'yR',borderColor:'#c0504d',borderWidth:2.6,pointRadius:0,tension:.3,spanGaps:false});
+  // forward forecast: Monte-Carlo simulation (skipped once a student has dropped out)
+  if(!goneNow){
+    let foreMed,foreLo,foreHi;
+    if(s.risk_wd&&FCAST){const mc=mcRisk(s,i,n);foreMed=aL(mc.med);foreLo=aL(mc.lo);foreHi=aL(mc.hi);}
+    else{foreMed=aL(fore(s.risk[i]));foreLo=aL(fore(s.risk_lo[i]));foreHi=aL(fore(s.risk_hi[i]));}
+    band(foreLo,foreHi,{ax:'yR',bg:ha('#c0504d',.16)});
+    ds.push({label:'Risk (projected)',data:foreMed,yAxisID:'yR',borderColor:'#c0504d',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:.2,spanGaps:false});
+  }
   if(gradeOK()){
-    band(upto(s.grade_lo),upto(s.grade_hi),{ax:'yG',bg:ha('#3ec98e',.15)});
-    ds.push({label:'Coursework',data:upto(s.grade_med),yAxisID:'yG',borderColor:'#3ec98e',borderWidth:2.6,pointRadius:0,tension:.3,spanGaps:false});
-    band(fore(s.grade_lo[i]),fore(s.grade_hi[i]),{ax:'yG',bg:ha('#3ec98e',.13)});
-    ds.push({label:'Coursework (outlook)',data:fore(s.grade_med[i]),yAxisID:'yG',borderColor:'#3ec98e',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:0,spanGaps:false});
+    ds.push({label:'Coursework',data:upto(s.grade_med),yAxisID:'yG',borderColor:'#3f8f63',borderWidth:2.6,pointRadius:0,tension:.3,spanGaps:false});
+    if(!goneNow){
+    band(fore(s.grade_lo[i]),fore(s.grade_hi[i]),{ax:'yG',bg:ha('#3f8f63',.13)});
+    ds.push({label:'Coursework (outlook)',data:fore(s.grade_med[i]),yAxisID:'yG',borderColor:'#3f8f63',borderWidth:2,borderDash:[5,4],pointRadius:0,tension:0,spanGaps:false});
+    }
     // actual assessment marks received so far (bars on the coursework axis)
     if(s.assessments&&s.assessments.length){
-      const bd=wk.map(w=>{const ms=s.assessments.filter(a=>a.w===w&&a.type!=='Exam'&&w<=wk[i]);return ms.length?Math.round(ms.reduce((x,a)=>x+a.score,0)/ms.length):null;});
-      ds.push({type:'bar',label:'Actual mark',data:bd,yAxisID:'yG',backgroundColor:ha('#3ec98e',.5),borderColor:ha('#3ec98e',.85),borderWidth:1,barThickness:7,order:99});
+      const bd=wk.map(w=>{const ms=s.assessments.filter(a=>a.w===w&&a.type!=='Exam'&&w<=wk[ci]);return ms.length?Math.round(ms.reduce((x,a)=>x+a.score,0)/ms.length):null;});
+      ds.push({type:'bar',label:'Actual mark',data:bd,yAxisID:'yG',backgroundColor:ha('#3f8f63',.5),borderColor:ha('#3f8f63',.85),borderWidth:1,barThickness:7,order:99});
     }
   }
   // flat alert bar at 50 (the rising threshold is normalised into the risk values, not the line)
-  ds.push({label:'Alert line',data:wk.map(_=>50),yAxisID:'yR',borderColor:'rgba(230,162,53,.7)',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false,tension:0,order:50});
-  const nowLine={id:'nl',afterDraw(c){const x=c.scales.x.getPixelForValue(wk[i]);const a=c.chartArea,g=c.ctx;g.save();g.strokeStyle='rgba(255,255,255,.5)';g.setLineDash([3,3]);g.beginPath();g.moveTo(x,a.top);g.lineTo(x,a.bottom);g.stroke();g.fillStyle='#9aa3b2';g.font="10px 'DM Mono'";g.setLineDash([]);g.fillText('now',x+4,a.top+11);g.restore();}};
-  const tk={color:'#7a8090',font:{size:10,family:"'DM Mono',monospace"}};
+  ds.push({label:'Alert line',data:wk.map(_=>50),yAxisID:'yR',borderColor:'rgba(191,132,43,.75)',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false,tension:0,order:50});
+  const nowLine={id:'nl',afterDraw(c){const x=c.scales.x.getPixelForValue(wk[ci]);const a=c.chartArea,g=c.ctx;g.save();g.strokeStyle=goneNow?'rgba(192,80,77,.6)':'rgba(40,50,65,.45)';g.setLineDash([3,3]);g.beginPath();g.moveTo(x,a.top);g.lineTo(x,a.bottom);g.stroke();g.fillStyle=goneNow?'#c0504d':'#5a6472';g.font="10px 'DM Mono'";g.setLineDash([]);g.fillText(goneNow?('dropped out · wk '+dW):'now',x+4,a.top+11);g.restore();}};
+  const tk={color:'#66717f',font:{size:10,family:"'DM Mono',monospace"}};
   CHART=new Chart(ctx,{type:'line',data:{labels:wk,datasets:ds},plugins:[nowLine],
     options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{filter:it=>it.dataset.label!=null,
@@ -402,9 +424,9 @@ function buildChart(s,i){
           if(lab==='Alert line')return 'Alert bar';
           if(lab.startsWith('Risk')){const t=Math.max(.02,Math.min(.98,thrAt(wk[c.dataIndex])));const L=c.raw;const p=L<=50?L*t/50:t+(L-50)*(1-t)/50;return `${lab}: ${Math.round(p*100)}% chance (${L>=50?'above':'below'} alert)`;}
           return `${lab}: ${Math.round(c.raw)}`;}}}},
-      scales:{x:{ticks:tk,grid:{color:'rgba(255,255,255,.04)'},title:{display:true,text:'week',color:'#7a8090',font:{size:10}}},
-        yR:{position:'left',min:0,max:100,ticks:{...tk,stepSize:50,callback:v=>({0:'safer',50:'ALERT',100:'urgent'}[v]||'')},grid:{color:'rgba(255,255,255,.04)'},title:{display:true,text:'risk vs alert',color:'#e05555',font:{size:10}}},
-        yG:{position:'right',min:0,max:100,display:gradeOK(),ticks:tk,grid:{drawOnChartArea:false},title:{display:true,text:'coursework',color:'#3ec98e',font:{size:10}}}}}});
+      scales:{x:{ticks:tk,grid:{color:'rgba(0,0,0,.06)'},title:{display:true,text:'week',color:'#66717f',font:{size:10}}},
+        yR:{position:'left',min:0,max:100,ticks:{...tk,stepSize:50,callback:v=>({0:'safer',50:'ALERT',100:'urgent'}[v]||'')},grid:{color:'rgba(0,0,0,.06)'},title:{display:true,text:'risk vs alert',color:'#c0504d',font:{size:10}}},
+        yG:{position:'right',min:0,max:100,display:gradeOK(),ticks:tk,grid:{drawOnChartArea:false},title:{display:true,text:'coursework',color:'#3f8f63',font:{size:10}}}}}});
 }
 </script>
 <div id="toast"></div>
